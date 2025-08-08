@@ -5,7 +5,6 @@ public class PlayerStats {
     // Base is used to read from json and initializing json
     private String name;
     private double baseLevel = 1;
-
     private double baseHP = 100;
     private double baseMana = 100;
     private double baseStamina = 100;
@@ -13,19 +12,24 @@ public class PlayerStats {
     private double baseDamage = 1;
 
     // Used in memory for calculations
-    private double maxHP;
-    private double maxMana;
-    private double maxStamina;
-    private double maxArmor;
-    private double maxDamage;
+    private transient double maxHP;
+    private transient double maxMana;
+    private transient double maxStamina;
+    private transient double maxArmor;
+    private transient double maxDamage;
 
-    private double currentHP;
-    private double currentMana;
-    private double currentStamina;
-    private double currentArmor;
-    private double currentDamage;
+    private transient double currentHP;
+    private transient double currentMana;
+    private transient double currentStamina;
+    private transient double currentArmor;
+    private transient double currentDamage;
+
+    public PlayerStats(String name) {
+        this.name = name;
+    }
 
     // Setters
+    public void setName(String name) { this.name = name;}
     public void setBaseLevel(double baseLevel) {
         this.baseLevel = baseLevel;
     }
@@ -76,6 +80,7 @@ public class PlayerStats {
     }
 
     // Getters
+    public String getName() { return name;}
     public double getBaseLevel() {
         return baseLevel;
     }

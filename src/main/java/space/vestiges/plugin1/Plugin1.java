@@ -3,39 +3,38 @@ package space.vestiges.plugin1;
 import space.vestiges.plugin1.listeners.PlayerListeners;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-
-
 public final class Plugin1 extends JavaPlugin {
+    private static Plugin1 instance;
+    private PlayerStatsManager statsManager;
 
     @Override
     public void onEnable() {
         // Plugin startup logic
-        PlayerListeners listener = new PlayerListeners(this);
-        getServer().getPluginManager().registerEvents(listener, this);
+        // Initialization
+        instance = this;
+        FileManager fileManager = new FileManager();
 
-        File dataFolder = getDataFolder();
-        if (!dataFolder.exists()) {
-            dataFolder.mkdir();
-            // If no storage, create storage json file
-        }
-        File jsonFile = new File(dataFolder, "player_stats.json");
-        if(!jsonFile.exists()) {
-            try {
-                jsonFile.createNewFile();
-                try (FileWriter writer = new FileWriter(jsonFile)) {
-                    writer.write("{}");
-                }
-            }catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
+        // Create Folder and File if they don't exist TODO: Separate the folder and file later
+        fileManager.initStorage();
+
+        // Create in memory player stats
+        statsManager = new PlayerStatsManager();
+
+        PlayerListeners listener = new PlayerListeners();
+        getServer().getPluginManager().registerEvents(listener, this);
     }
 
     @Override
     public void onDisable() {
         // Plugin shutdown logic
+        // TODO: Save from memory to json
+    }
+
+    public static Plugin1 getInstance() {
+        return instance;
+    }
+
+    public PlayerStatsManager getStatsManager() {
+        return statsManager;
     }
 }
