@@ -25,7 +25,7 @@ public class PlayerListeners implements Listener{
 
         // Get player
         Player player = event.getPlayer();
-        plugin.getLogger().info("Player " +  " Joined!!");
+        plugin.getLogger().info("Player " + player.getName() +  " Joined!!");
         // Check if user is in file, if not, create an entry. then send everything to memory
         //if (/*no file*/) {
 
@@ -37,8 +37,8 @@ public class PlayerListeners implements Listener{
 
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event) {
-        plugin.getLogger().info("Player Quit!!");
         // Get player
         Player player = event.getPlayer();
+        plugin.getLogger().info("Player " + player.getName() +  " Quit!!");
     }
 }

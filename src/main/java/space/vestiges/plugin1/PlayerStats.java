@@ -2,8 +2,10 @@ package space.vestiges.plugin1;
 
 public class PlayerStats {
 
-    // Base is only used for initializing Json / Read from
+    // Base is used to read from json and initializing json
+    private String name;
     private double baseLevel = 1;
+
     private double baseHP = 100;
     private double baseMana = 100;
     private double baseStamina = 100;

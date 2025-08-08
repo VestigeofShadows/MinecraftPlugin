@@ -13,15 +13,15 @@ public final class Plugin1 extends JavaPlugin {
     @Override
     public void onEnable() {
         // Plugin startup logic
+        PlayerListeners listener = new PlayerListeners(this);
+        getServer().getPluginManager().registerEvents(listener, this);
 
-        // First time running, generate Folder for plugin
         File dataFolder = getDataFolder();
         if (!dataFolder.exists()) {
             dataFolder.mkdir();
-
             // If no storage, create storage json file
         }
-        File jsonFile = new File(dataFolder, "stats.json");
+        File jsonFile = new File(dataFolder, "player_stats.json");
         if(!jsonFile.exists()) {
             try {
                 jsonFile.createNewFile();
@@ -32,10 +32,6 @@ public final class Plugin1 extends JavaPlugin {
                 e.printStackTrace();
             }
         }
-
-        PlayerListeners listener = new PlayerListeners(this);
-        getServer().getPluginManager().registerEvents(listener, this);
-
     }
 
     @Override
