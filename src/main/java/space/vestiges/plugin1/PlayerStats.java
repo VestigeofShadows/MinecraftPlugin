@@ -23,12 +23,6 @@ public class PlayerStats {
     private double currentArmor;
     private double currentDamage;
 
-    private double bonusHP;
-    private double bonusMP;
-    private double bonusStamina;
-    private double bonusArmor;
-    private double bonusDamage;
-
     // Setters
     public void setBaseLevel(double baseLevel) {
         this.baseLevel = baseLevel;
@@ -77,21 +71,6 @@ public class PlayerStats {
     }
     public void setCurrentDamage(double currentDamage) {
         this.currentDamage = currentDamage;
-    }
-    public void setBonusHP(double bonusHP) {
-        this.bonusHP = bonusHP;
-    }
-    public void setBonusMP(double bonusMP) {
-        this.bonusMP = bonusMP;
-    }
-    public void setBonusStamina(double bonusStamina) {
-        this.bonusStamina = bonusStamina;
-    }
-    public void setBonusArmor(double bonusArmor) {
-        this.bonusArmor = bonusArmor;
-    }
-    public void setBonusDamage(double bonusDamage) {
-        this.bonusDamage = bonusDamage;
     }
 
     // Getters
@@ -142,20 +121,5 @@ public class PlayerStats {
     }
     public double getCurrentDamage() {
         return currentDamage;
-    }
-    public double getBonusHP() {
-        return bonusHP;
-    }
-    public double getBonusMP() {
-        return bonusMP;
-    }
-    public double getBonusStamina() {
-        return bonusStamina;
-    }
-    public double getBonusArmor() {
-        return bonusArmor;
-    }
-    public double getBonusDamage() {
-        return bonusDamage;
     }
 }
