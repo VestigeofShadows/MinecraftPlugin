@@ -2,3 +2,8 @@ name: JonAmazingPluginChangeNameLaterTestThingy
 version: '1.0-SNAPSHOT'
 main: space.vestiges.plugin1.Plugin1
 api-version: '1.21'
+
+commands:
+  teststats:
+    description: Test player stats commands
+    usage: /teststats <action>

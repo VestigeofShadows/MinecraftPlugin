@@ -6,19 +6,18 @@ import org.bukkit.plugin.java.JavaPlugin;
 public final class Plugin1 extends JavaPlugin {
     private static Plugin1 instance;
     private PlayerStatsManager statsManager;
+    private PlayerStatsStorage statsStorage;
 
     @Override
     public void onEnable() {
         // Plugin startup logic
         // Initialization
         instance = this;
-        FileManager fileManager = new FileManager();
+        statsStorage = new PlayerStatsStorage();
+        statsManager = new PlayerStatsManager();
 
         // Create Folder and File if they don't exist TODO: Separate the folder and file later
-        fileManager.initStorage();
-
-        // Create in memory player stats
-        statsManager = new PlayerStatsManager();
+        statsStorage.initStorage();
 
         PlayerListeners listener = new PlayerListeners();
         getServer().getPluginManager().registerEvents(listener, this);
@@ -27,7 +26,7 @@ public final class Plugin1 extends JavaPlugin {
     @Override
     public void onDisable() {
         // Plugin shutdown logic
-        // TODO: Save from memory to json
+        // TODO: Save from memory stats to json?? Not sure if I actually need to
     }
 
     public static Plugin1 getInstance() {
@@ -36,5 +35,8 @@ public final class Plugin1 extends JavaPlugin {
 
     public PlayerStatsManager getStatsManager() {
         return statsManager;
+    }
+    public PlayerStatsStorage getStorageManager() {
+        return statsStorage;
     }
 }

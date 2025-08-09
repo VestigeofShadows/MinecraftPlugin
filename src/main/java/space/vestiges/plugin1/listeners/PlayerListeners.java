@@ -10,6 +10,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import space.vestiges.plugin1.PlayerStats;
 import space.vestiges.plugin1.PlayerStatsManager;
+import space.vestiges.plugin1.PlayerStatsStorage;
 import space.vestiges.plugin1.Plugin1;
 
 import java.io.File;
@@ -23,29 +24,24 @@ public class PlayerListeners implements Listener{
 
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
-        //make gson lol
-        Gson gson = new Gson();
         PlayerStatsManager statsManager = Plugin1.getInstance().getStatsManager();
+        PlayerStatsStorage statsStorage = Plugin1.getInstance().getStorageManager();
 
         // Get player
         Player player = event.getPlayer();
 
-        //check if player exists in stored player first
-        if (!statsManager.isPlayerStored(player)) {
-            // Create temporary stats
-            PlayerStats tempstats = new PlayerStats(player.getName());
+        // If player exists in storage, add to active memory, else create it and add it in active and database
+        if (statsStorage.playerExists(player)) {
+            //debug text delete later
+            Plugin1.getInstance().getLogger().info("Player stat exists");
+            statsManager.addActivePlayer(player, statsStorage.getPlayerStoredStats(player));
+        } else {
+            //debug text delete later
+            Plugin1.getInstance().getLogger().info("Player stat does not exist");
 
-            // Put it in StoredPlayers
-            statsManager.addStoredPlayer(player, tempstats);
-
-            String json = gson.toJson(statsManager.getStoredPlayers());
-            Plugin1.getInstance().getLogger().info("Player StoredPlayers json info \n" + json);
-
-            // TODO: Put new entry in active player
-            statsManager.addActivePlayer(player, tempstats);
-            // TODO: Put new entry in stored players, and update the database
-            statsManager.addStoredPlayer(player, tempstats);
-
+            PlayerStats tempStats = new PlayerStats(player.getName());
+            statsManager.addActivePlayer(player, tempStats);
+            statsStorage.addStoredPlayer(player, tempStats);
         }
     }
 
@@ -53,6 +49,6 @@ public class PlayerListeners implements Listener{
     public void onPlayerQuit(PlayerQuitEvent event) {
         // Get player
         Player player = event.getPlayer();
-        Plugin1.getInstance().getLogger().info("Player " + player.getName() +  " Quit!!");
+
     }
 }

@@ -18,16 +18,16 @@ public class PlayerStats {
     private transient double maxArmor;
     private transient double maxDamage;
 
-    private transient double currentHP;
-    private transient double currentMana;
-    private transient double currentStamina;
-    private transient double currentArmor;
-    private transient double currentDamage;
+    // These need to be reupdated
+    private double currentHP = baseHP;
+    private double currentMana = baseMana;
+    private double currentStamina =  baseStamina;
+    private double currentArmor = baseArmor;
+    private double currentDamage =  baseDamage;
 
     public PlayerStats(String name) {
         this.name = name;
     }
-
     // Setters
     public void setName(String name) { this.name = name;}
     public void setBaseLevel(double baseLevel) {
