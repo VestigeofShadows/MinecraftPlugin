@@ -16,13 +16,13 @@ public final class Plugin1 extends JavaPlugin {
         instance = this;
         statsStorage = new PlayerStatsStorage();
         statsManager = new PlayerStatsManager();
+        statsStorage.initStorage(); // Creates Folder + player_stats.db if not exist
 
-        // Create Folder and File if they don't exist TODO: Separate the folder and file later
-        statsStorage.initStorage();
-        statsStorage.initStorage2();
-
+        //Listeners
         PlayerListeners listener = new PlayerListeners();
         getServer().getPluginManager().registerEvents(listener, this);
+
+        //Commands
         this.getCommand("teststats").setExecutor(new TestStatsCommand(statsManager, statsStorage));
     }
 
