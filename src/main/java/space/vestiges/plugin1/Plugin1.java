@@ -1,5 +1,6 @@
 package space.vestiges.plugin1;
 
+import space.vestiges.plugin1.commands.TestStatsCommand;
 import space.vestiges.plugin1.listeners.PlayerListeners;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -21,6 +22,7 @@ public final class Plugin1 extends JavaPlugin {
 
         PlayerListeners listener = new PlayerListeners();
         getServer().getPluginManager().registerEvents(listener, this);
+        this.getCommand("teststats").setExecutor(new TestStatsCommand(statsManager, statsStorage));
     }
 
     @Override
@@ -32,11 +34,11 @@ public final class Plugin1 extends JavaPlugin {
     public static Plugin1 getInstance() {
         return instance;
     }
-
     public PlayerStatsManager getStatsManager() {
         return statsManager;
     }
     public PlayerStatsStorage getStorageManager() {
         return statsStorage;
     }
+
 }

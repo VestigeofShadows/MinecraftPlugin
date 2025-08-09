@@ -18,6 +18,7 @@ public class PlayerStatsManager {
     public HashMap<UUID, PlayerStats> getActivePlayers() {
         return activePlayers;
     }
+    // put stats into a player
     public void addActivePlayer(Player player, PlayerStats playerstats) {
         activePlayers.put(player.getUniqueId(), playerstats);
     }
