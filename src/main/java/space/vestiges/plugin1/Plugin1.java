@@ -19,6 +19,7 @@ public final class Plugin1 extends JavaPlugin {
 
         // Create Folder and File if they don't exist TODO: Separate the folder and file later
         statsStorage.initStorage();
+        statsStorage.initStorage2();
 
         PlayerListeners listener = new PlayerListeners();
         getServer().getPluginManager().registerEvents(listener, this);
