@@ -20,6 +20,9 @@ public class PlayerStatsStorage {
     private final HashMap<UUID, PlayerStats> storedPlayers;
     private Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
+
+    // ----------------------------------- SEPARATION DB -----------------------------------------
+
     private Connection connection;
     private void connect() {
         try {
@@ -97,6 +100,9 @@ public class PlayerStatsStorage {
         connect();
         createTable();
     }
+
+    // ----------------------------------- SEPARATION DB -----------------------------------------
+
     // Constructor sets pluginFolder, and pluginFile
     public PlayerStatsStorage(){
         this.pluginFolder = Plugin1.getInstance().getDataFolder();
