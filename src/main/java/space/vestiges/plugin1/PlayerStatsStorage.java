@@ -15,10 +15,10 @@ import java.util.UUID;
 
 public class PlayerStatsStorage {
 
-    private File pluginFolder; // TODO This can be moved to folder generation class
-    private File pluginFile;
+    private final File pluginFolder; // TODO This can be moved to folder generation class
+    private final File pluginFile;
     private final HashMap<UUID, PlayerStats> storedPlayers;
-    private Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    private final Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
 
     // ----------------------------------- SEPARATION DB -----------------------------------------
