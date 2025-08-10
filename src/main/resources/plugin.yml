@@ -4,6 +4,6 @@ main: space.vestiges.plugin1.Plugin1
 api-version: '1.21'
 
 commands:
-  teststats:
+  p:
     description: Test player stats commands
-    usage: /teststats <action>
+    usage: /p <action>

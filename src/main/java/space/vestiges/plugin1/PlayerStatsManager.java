@@ -1,6 +1,7 @@
 package space.vestiges.plugin1;
 
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 import java.util.UUID;
@@ -9,19 +10,18 @@ public class PlayerStatsManager {
 
     private final HashMap<UUID, PlayerStats> activePlayers;
 
-    // TODO: Constructor makes using stored players access json file
     PlayerStatsManager() {
         activePlayers = new HashMap<>();
-        // TODO: Initialize stored players from json file
-
     }
+    // returns the entire HashMap (not sure why you need this)
     public HashMap<UUID, PlayerStats> getActivePlayers() {
         return activePlayers;
     }
-    // put stats into a player
-    public void addActivePlayer(Player player, PlayerStats playerstats) {
+    // put (replaces) stats of a player (not very useful)
+    public void addActivePlayer(@NotNull Player player, PlayerStats playerstats) {
         activePlayers.put(player.getUniqueId(), playerstats);
     }
+    // use player from memory on leave to save memory
     public void removeActivePlayer(Player player) {
         activePlayers.remove(player.getUniqueId());
     }
@@ -29,4 +29,7 @@ public class PlayerStatsManager {
         UUID uuid = player.getUniqueId();
         return activePlayers.get(uuid);
     }
+
+    // TODO: Initialize player stats on join from database and put it in active players armor bonuses
+
 }

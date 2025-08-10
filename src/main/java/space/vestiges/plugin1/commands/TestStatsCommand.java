@@ -13,9 +13,11 @@ import space.vestiges.plugin1.Plugin1;
 public class TestStatsCommand implements CommandExecutor {
 
     private final PlayerStatsManager statsManager;
+    private final PlayerStatsStorage statsStorage;
 
     public TestStatsCommand(PlayerStatsManager statsManager, PlayerStatsStorage statsStorage) {
         this.statsManager = statsManager;
+        this.statsStorage = statsStorage;
     }
 
     @Override

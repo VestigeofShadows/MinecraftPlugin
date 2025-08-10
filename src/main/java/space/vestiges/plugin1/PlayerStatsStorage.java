@@ -62,7 +62,7 @@ public class PlayerStatsStorage {
         }
     }
     public PlayerStats getPlayerStoredStats(@NotNull Player player) {
-        String sql = "SELECT playername, last_saved, total_xp, base_hp, base_mana, base_stamina, base_armor, base_power, base_haste FROM player_stats WHERE uuid = ?";
+        String sql = "SELECT uuid, playername, last_saved, total_xp, base_hp, base_mana, base_stamina, base_armor, base_power, base_haste FROM player_stats WHERE uuid = ?";
         try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
             pstmt.setString(1, player.getUniqueId().toString());
             ResultSet rs = pstmt.executeQuery();

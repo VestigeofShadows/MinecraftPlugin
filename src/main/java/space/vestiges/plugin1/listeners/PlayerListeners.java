@@ -16,9 +16,25 @@ public class PlayerListeners implements Listener{
     private final PlayerStatsManager statsManager = Plugin1.getInstance().getStatsManager();
     private final PlayerStatsStorage statsStorage = Plugin1.getInstance().getStorageManager();
 
+    // Loads player from database on player join, fill in all fields
     public void loadPlayerInfo(Player player) {
         statsManager.addActivePlayer(player, statsStorage.getPlayerStoredStats(player));
+        // find hashmap
+        PlayerStats currentPlayer = statsManager.getPlayerInfo(player);
+        // put new values into hashmap
+
+        // CALCULATE ALL STATS FUNCTION
+        // CALCULATE LEVEL ?
+        // CALCULATE HP
+        // CALCULATE MANA
+        // CALCULATE STAMINA
+        // CALCULATE ARMOR
+        // CALCULATE POWER
+        // CALCULATE HASTE
+
+        // currentPlayer.setMaxHP();
     }
+
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
         // Get player
@@ -41,6 +57,6 @@ public class PlayerListeners implements Listener{
     public void onPlayerQuit(PlayerQuitEvent event) {
         // Get player
         Player player = event.getPlayer();
-
+        statsManager.removeActivePlayer(player);
     }
 }

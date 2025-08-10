@@ -23,7 +23,7 @@ public final class Plugin1 extends JavaPlugin {
         getServer().getPluginManager().registerEvents(listener, this);
 
         //Commands
-        this.getCommand("teststats").setExecutor(new TestStatsCommand(statsManager, statsStorage));
+        this.getCommand("p").setExecutor(new TestStatsCommand(statsManager, statsStorage));
     }
 
     @Override
