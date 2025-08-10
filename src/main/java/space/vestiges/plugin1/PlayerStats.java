@@ -11,6 +11,7 @@ public class PlayerStats {
     private String name;
     private int last_saved;
 
+    private int level;
     private double total_xp;
     private double base_hp;
     private double base_mana;
@@ -69,6 +70,7 @@ public class PlayerStats {
     public void setLast_saved(int last_saved) {
         this.last_saved = last_saved;
     }
+    public void setLevel(int level) { this.level = level;}
     public void setTotal_xp(double total_xp) {
         this.total_xp = total_xp;
     }
@@ -125,6 +127,7 @@ public class PlayerStats {
     public int getLast_saved() {
         return last_saved;
     }
+    public int getLevel() { return level; }
     public double getTotal_xp() {
         return total_xp;
     }
