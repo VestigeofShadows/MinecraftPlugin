@@ -35,7 +35,26 @@ public class TestStatsCommand implements CommandExecutor {
         switch (args[0].toLowerCase()) {
             case "show" -> {
                 PlayerStats stats = statsManager.getPlayerInfo(player);
-                player.sendMessage("Your stats: " + stats.getCurrentHP());
+                player.sendMessage("uuid: " + stats.getUuid());
+                player.sendMessage("name: " + stats.getName());
+                player.sendMessage("last saved: " + stats.getLast_saved());
+                player.sendMessage("level: " + stats.getLevel());
+                player.sendMessage("total xp:  " + stats.getTotal_xp());
+                player.sendMessage("base hp: " + stats.getBase_hp());
+                player.sendMessage("base mana:  " + stats.getBase_mana());
+                player.sendMessage("base stamina:  " + stats.getBase_stamina());
+                player.sendMessage("base armor:  " + stats.getBase_armor());
+                player.sendMessage("base power:  " + stats.getBase_power());
+                player.sendMessage("base haste:  " + stats.getBase_haste());
+                player.sendMessage("max HP: " + stats.getMaxHP());
+                player.sendMessage("max Mana: " + stats.getMaxMana());
+                player.sendMessage("max Stamina: " + stats.getMaxStamina());
+                player.sendMessage("current HP: " + stats.getCurrentHP());
+                player.sendMessage("current Mana: " + stats.getCurrentMana());
+                player.sendMessage("current stamina: " + stats.getCurrentStamina());
+                player.sendMessage("armor: " + stats.getArmor());
+                player.sendMessage("power: " + stats.getPower());
+                player.sendMessage("haste: " + stats.getHaste());
             }
             case "add" -> {
                 // Example: Add 10 points to some stat
