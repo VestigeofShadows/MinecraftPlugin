@@ -28,7 +28,7 @@ public class TestStatsCommand implements CommandExecutor {
         }
 
         if (args.length == 0) {
-            player.sendMessage("Usage: /teststats <show|add|remove|reloadme> don't run remove");
+            player.sendMessage("Usage: /p <show|add|remove|reloadme> don't run remove");
             return true;
         }
 
