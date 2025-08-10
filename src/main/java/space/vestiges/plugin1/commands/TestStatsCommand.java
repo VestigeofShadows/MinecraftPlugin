@@ -57,12 +57,13 @@ public class TestStatsCommand implements CommandExecutor {
                 player.sendMessage("haste: " + stats.getHaste());
             }
             case "add" -> {
-                // Example: Add 10 points to some stat
+                // Example: Add 10 points to some stat don't use
                 PlayerStats stats = statsManager.getPlayerInfo(player);
                 stats.setCurrentHP(stats.getCurrentHP() + 10);
                 player.sendMessage("Added 10 points! New points: " + stats.getCurrentHP());
             }
             case "remove" -> {
+                // don't use unless u want the thing break lmao
                 statsManager.removeActivePlayer(player);
                 player.sendMessage("Your stats removed from memory. Not storage though");
             }
