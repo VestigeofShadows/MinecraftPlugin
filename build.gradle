@@ -6,6 +6,8 @@ plugins {
 group = 'space.vestiges'
 version = '1.0-SNAPSHOT'
 
+def mythicVersion = '5.9.5'
+
 repositories {
     mavenCentral()
     maven {
@@ -16,11 +18,14 @@ repositories {
         name = "CodeMC"
         url = uri("https://repo.codemc.io/repository/maven-public/")
     }
+    flatDir {
+        dirs 'libs'
+    }
 }
 
 dependencies {
     compileOnly("io.papermc.paper:paper-api:1.21.5-R0.1-SNAPSHOT")
-    compileOnly files("../m")
+    compileOnly name: "MythicMobs-${mythicVersion}"
     implementation("de.tr7zw:item-nbt-api-plugin:2.15.1")
     implementation 'com.google.code.gson:gson:2.13.1'
     implementation 'org.xerial:sqlite-jdbc:3.45.1.0'
