@@ -7,12 +7,11 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.entity.Player;
 
-import space.vestiges.plugin1.PlayerStats;
-import space.vestiges.plugin1.PlayerStatsManager;
-import space.vestiges.plugin1.PlayerStatsStorage;
+import space.vestiges.plugin1.player.PlayerStats;
+import space.vestiges.plugin1.player.PlayerStatsManager;
+import space.vestiges.plugin1.player.PlayerStatsStorage;
 import space.vestiges.plugin1.Plugin1;
 import space.vestiges.plugin1.equipment.EquipmentManager;
-import space.vestiges.plugin1.equipment.EquipmentStats;
 
 public class PlayerListeners implements Listener{
     private final PlayerStatsManager statsManager = Plugin1.getInstance().getStatsManager();

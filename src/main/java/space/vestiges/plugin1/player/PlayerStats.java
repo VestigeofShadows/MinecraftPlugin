@@ -1,4 +1,4 @@
-package space.vestiges.plugin1;
+package space.vestiges.plugin1.player;
 
 import org.bukkit.entity.Player;
 

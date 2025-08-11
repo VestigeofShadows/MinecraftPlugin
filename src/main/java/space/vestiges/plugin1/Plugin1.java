@@ -3,6 +3,8 @@ package space.vestiges.plugin1;
 import space.vestiges.plugin1.commands.TestStatsCommand;
 import space.vestiges.plugin1.listeners.PlayerListeners;
 import org.bukkit.plugin.java.JavaPlugin;
+import space.vestiges.plugin1.player.PlayerStatsManager;
+import space.vestiges.plugin1.player.PlayerStatsStorage;
 
 public final class Plugin1 extends JavaPlugin {
     private static Plugin1 instance;

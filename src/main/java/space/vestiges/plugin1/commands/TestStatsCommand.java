@@ -8,15 +8,14 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
-import space.vestiges.plugin1.PlayerStats;
-import space.vestiges.plugin1.PlayerStatsManager;
-import space.vestiges.plugin1.PlayerStatsStorage;
+import space.vestiges.plugin1.player.PlayerStats;
+import space.vestiges.plugin1.player.PlayerStatsManager;
+import space.vestiges.plugin1.player.PlayerStatsStorage;
 import space.vestiges.plugin1.Plugin1;
 import space.vestiges.plugin1.equipment.EquipmentManager;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 public class TestStatsCommand implements CommandExecutor {
 

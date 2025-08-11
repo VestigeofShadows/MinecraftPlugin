@@ -1,7 +1,8 @@
-package space.vestiges.plugin1;
+package space.vestiges.plugin1.player;
 
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+import space.vestiges.plugin1.Plugin1;
 
 import java.io.*;
 import java.sql.*;

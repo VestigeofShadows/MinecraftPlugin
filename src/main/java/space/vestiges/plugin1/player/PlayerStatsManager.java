@@ -1,4 +1,4 @@
-package space.vestiges.plugin1;
+package space.vestiges.plugin1.player;
 
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -10,7 +10,7 @@ public class PlayerStatsManager {
 
     private final HashMap<UUID, PlayerStats> activePlayers;
 
-    PlayerStatsManager() {
+    public PlayerStatsManager() {
         activePlayers = new HashMap<>();
     }
     // returns the entire HashMap (not sure why you need this)
