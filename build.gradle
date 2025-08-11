@@ -7,6 +7,13 @@ group = 'space.vestiges'
 version = '1.0-SNAPSHOT'
 
 def mythicVersion = '5.9.5'
+def mythicJar = file("libs/MythicMobs-${mythicVersion}.jar")
+
+// Fail the build if the jar isn't present
+if (!mythicJar.exists()) {
+    throw new GradleException("Missing MythicMobs jar: ${mythicJar}. " +
+            "Download MythicMobs ${mythicVersion} and place it in the libs/ folder.")
+}
 
 repositories {
     mavenCentral()
