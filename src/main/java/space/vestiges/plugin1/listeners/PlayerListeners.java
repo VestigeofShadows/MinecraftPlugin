@@ -17,29 +17,6 @@ public class PlayerListeners implements Listener{
     private final PlayerStatsManager statsManager = Plugin1.getInstance().getStatsManager();
     private final PlayerStatsStorage statsStorage = Plugin1.getInstance().getStorageManager();
 
-    // Loads player from database on player join, fill in all fields
-    public void loadPlayerInfo(Player player) {
-        // add stored stats to active stats
-        statsManager.addActivePlayer(player, statsStorage.getPlayerStoredStats(player));
-        // find current player in the hashmap
-        PlayerStats currentPlayer = statsManager.getPlayerInfo(player);
-        // put new values into hashmap
-
-        EquipmentManager equipment = new EquipmentManager();
-        equipment.getCombinedStats(player);
-
-        // CALCULATE ALL STATS FUNCTION
-        // CALCULATE LEVEL (from totalxp)
-        // CALCULATE maxHP (from base + gear) (no buffs)
-        // CALCULATE maxMANA (from base + gear) (no buffs)
-        // CALCULATE maxSTAMINA (from base + gear) (no buffs)
-        // CALCULATE ARMOR (from base + gear) (no buffs)
-        // CALCULATE POWER (from base + gear) (no buffs)
-        // CALCULATE HASTE (from base + gear) (no buffs)
-
-        // currentPlayer.setMaxHP();
-    }
-
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
         // Get player
@@ -66,5 +43,28 @@ public class PlayerListeners implements Listener{
         // Get player
         Player player = event.getPlayer();
         statsManager.removeActivePlayer(player);
+    }
+
+    // Loads player from database on player join, fill in all fields
+    public void loadPlayerInfo(Player player) {
+        // add stored stats to active stats
+        statsManager.addActivePlayer(player, statsStorage.getPlayerStoredStats(player));
+        // find current player in the hashmap
+        PlayerStats currentPlayer = statsManager.getPlayerInfo(player);
+        // put new values into hashmap
+
+        EquipmentManager equipment = new EquipmentManager();
+        equipment.getCombinedStats(player);
+
+        // CALCULATE ALL STATS FUNCTION
+        // CALCULATE LEVEL (from totalxp)
+        // CALCULATE maxHP (from base + gear) (no buffs)
+        // CALCULATE maxMANA (from base + gear) (no buffs)
+        // CALCULATE maxSTAMINA (from base + gear) (no buffs)
+        // CALCULATE ARMOR (from base + gear) (no buffs)
+        // CALCULATE POWER (from base + gear) (no buffs)
+        // CALCULATE HASTE (from base + gear) (no buffs)
+
+        // currentPlayer.setMaxHP();
     }
 }

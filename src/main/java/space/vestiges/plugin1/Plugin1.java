@@ -1,6 +1,7 @@
 package space.vestiges.plugin1;
 
 import space.vestiges.plugin1.commands.TestStatsCommand;
+import space.vestiges.plugin1.listeners.MobListener;
 import space.vestiges.plugin1.listeners.PlayerListeners;
 import org.bukkit.plugin.java.JavaPlugin;
 import space.vestiges.plugin1.player.PlayerStatsManager;
@@ -10,6 +11,7 @@ public final class Plugin1 extends JavaPlugin {
     private static Plugin1 instance;
     private PlayerStatsManager statsManager;
     private PlayerStatsStorage statsStorage;
+    public boolean toggleflag = false;
 
     @Override
     public void onEnable() {
@@ -22,7 +24,9 @@ public final class Plugin1 extends JavaPlugin {
 
         //Listeners
         PlayerListeners listener = new PlayerListeners();
+        MobListener mobListener = new MobListener();
         getServer().getPluginManager().registerEvents(listener, this);
+        getServer().getPluginManager().registerEvents(mobListener, this);
 
         //Commands
         this.getCommand("p").setExecutor(new TestStatsCommand(statsManager, statsStorage));
@@ -31,7 +35,7 @@ public final class Plugin1 extends JavaPlugin {
     @Override
     public void onDisable() {
         // Plugin shutdown logic
-        // TODO: Save from memory stats to json?? Not sure if I actually need to
+        // TODO: Save from memory stats to db?? Not sure if I actually need to do this
     }
 
     public static Plugin1 getInstance() {

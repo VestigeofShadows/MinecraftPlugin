@@ -2,6 +2,7 @@ name: JonAmazingPluginChangeNameLaterTestThingy
 version: '1.0-SNAPSHOT'
 main: space.vestiges.plugin1.Plugin1
 api-version: '1.21'
+softdepend: [MythicMobs]
 
 commands:
   p:

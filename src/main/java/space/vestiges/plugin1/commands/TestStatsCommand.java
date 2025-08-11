@@ -94,6 +94,9 @@ public class TestStatsCommand implements CommandExecutor {
                 EquipmentManager equipment = new EquipmentManager();
                 equipment.getCombinedStats(player);
             }
+            case "toggleflag" -> {
+                Plugin1.getInstance().toggleflag = !Plugin1.getInstance().toggleflag;
+            }
 
             default -> player.sendMessage("Unknown action. Use show, add, or remove.");
         }
