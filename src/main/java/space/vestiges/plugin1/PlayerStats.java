@@ -37,6 +37,7 @@ public class PlayerStats {
     public PlayerStats(Player player) {
         this.uuid = player.getUniqueId();
         this.name = player.getName();
+        this.level = 1;
         this.total_xp = 0;
         this.base_hp = 100;
         this.base_mana = 100;
@@ -48,9 +49,9 @@ public class PlayerStats {
     }
 
     // This constructor is for loading players
-    public PlayerStats(String uuid, String playername, int last_saved, double total_xp, double base_hp, double base_mana, double base_stamina, double base_armor, double base_power, double base_haste) {
+    public PlayerStats(String uuid, String name, int last_saved, double total_xp, double base_hp, double base_mana, double base_stamina, double base_armor, double base_power, double base_haste) {
         this.uuid = UUID.fromString(uuid);
-        this.name = playername;
+        this.name = name;
         this.total_xp = total_xp;
         this.base_hp = base_hp;
         this.base_mana = base_mana;

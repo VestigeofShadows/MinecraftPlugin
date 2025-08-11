@@ -12,10 +12,15 @@ repositories {
         name = "papermc-repo"
         url = "https://repo.papermc.io/repository/maven-public/"
     }
+    maven {
+        name = "CodeMC"
+        url = uri("https://repo.codemc.io/repository/maven-public/")
+    }
 }
 
 dependencies {
     compileOnly("io.papermc.paper:paper-api:1.21.5-R0.1-SNAPSHOT")
+    implementation("de.tr7zw:item-nbt-api-plugin:2.15.1")
     implementation 'com.google.code.gson:gson:2.13.1'
     implementation 'org.xerial:sqlite-jdbc:3.45.1.0'
 }

@@ -1,14 +1,22 @@
 package space.vestiges.plugin1.commands;
 
+import de.tr7zw.nbtapi.NBT;
+import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import space.vestiges.plugin1.PlayerStats;
 import space.vestiges.plugin1.PlayerStatsManager;
 import space.vestiges.plugin1.PlayerStatsStorage;
 import space.vestiges.plugin1.Plugin1;
+import space.vestiges.plugin1.equipment.EquipmentManager;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
 public class TestStatsCommand implements CommandExecutor {
 
@@ -72,10 +80,57 @@ public class TestStatsCommand implements CommandExecutor {
                 // statsManager.addActivePlayer(player, statsStorage.getPlayerStoredStats(player));
                 Plugin1.getInstance().getLogger().info("This command doesn't do shit rn");
             }
+            case "getkit" -> {
+                ItemStack helm = createRandomStatItem(Material.DIAMOND_HELMET);
+                ItemStack chest = createRandomStatItem(Material.DIAMOND_CHESTPLATE);
+                ItemStack legs = createRandomStatItem(Material.DIAMOND_LEGGINGS);
+                ItemStack boots = createRandomStatItem(Material.DIAMOND_BOOTS);
+                ItemStack swordMain = createRandomStatItem(Material.DIAMOND_SWORD);
+                ItemStack swordOffhand = createRandomStatItem(Material.DIAMOND_SWORD);
+
+                player.getInventory().addItem(helm, chest, legs, boots, swordMain, swordOffhand);
+                player.sendMessage("You received a kit with random stats!");
+            }
+            case "showarmor" -> {
+                EquipmentManager equipment = new EquipmentManager();
+                equipment.getCombinedStats(player);
+            }
 
             default -> player.sendMessage("Unknown action. Use show, add, or remove.");
         }
 
         return true;
+    }
+
+    private ItemStack createRandomStatItem(Material material) {
+        ItemStack item = new ItemStack(material);
+
+        double hp = Math.random()*5;
+        double mana = Math.random()*5;
+        double stamina = Math.random()*5;
+        double armor = Math.random()*5;
+        double power = Math.random()*5;
+        double haste = Math.random()*5;
+
+        NBT.modify(item, nbt -> {
+            nbt.setDouble("hp", hp);
+            nbt.setDouble("mana", mana);
+            nbt.setDouble("stamina", stamina);
+            nbt.setDouble("armor", armor);
+            nbt.setDouble("power", power);
+            nbt.setDouble("haste", haste);
+        });
+
+        List<String> lore = new ArrayList<>();
+        lore.add("HP: " + String.format("%.2f", hp));
+        lore.add("Mana: " + String.format("%.2f", mana));
+        lore.add("Stamina: " + String.format("%.2f", stamina));
+        lore.add("Armor: " + String.format("%.2f", armor));
+        lore.add("Power: " + String.format("%.2f", power));
+        lore.add("Haste: " + String.format("%.2f", haste));
+
+        item.setLore(lore);
+
+        return item;
     }
 }

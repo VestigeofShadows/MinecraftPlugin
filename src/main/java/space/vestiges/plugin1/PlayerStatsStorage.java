@@ -43,6 +43,7 @@ public class PlayerStatsStorage {
             e.printStackTrace();
         }
     }
+    // ADD PLAYER TO DATABASE
     public void addStoredPlayer(@NotNull Player player, PlayerStats stats) {
         String sql = "INSERT OR REPLACE INTO player_stats (uuid, playername, last_saved, total_xp, base_hp, base_mana, base_stamina, base_armor, base_power, base_haste) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
@@ -60,6 +61,10 @@ public class PlayerStatsStorage {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+    // REMOVE PLAYER IN THE DATABASE for testing? TODO
+    public void removeStoredPlayer(@NotNull Player player) {
+        String sql = "";
     }
     public PlayerStats getPlayerStoredStats(@NotNull Player player) {
         String sql = "SELECT uuid, playername, last_saved, total_xp, base_hp, base_mana, base_stamina, base_armor, base_power, base_haste FROM player_stats WHERE uuid = ?";
