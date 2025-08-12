@@ -6,24 +6,73 @@ public class EquipmentStats {
     private double stamina;
     private double armor;
     private double power;
-    private double haste;
+    private double attackSpeed;
 
-    //constructor
-    EquipmentStats() {
+    /**
+     * This constructor returns all EquipmentStats as 0s
+     */
+    public EquipmentStats() {
         this.hp = 0;
         this.mana = 0;
         this.stamina = 0;
         this.armor = 0;
         this.power = 0;
-        this.haste = 0;
+        this.attackSpeed = 0;
     }
-    EquipmentStats(double hp, double mana, double stamina, double armor, double power, double haste) {
+
+    /**
+     * Constructor to create an EquipmentStats with specified values.
+     *
+     * @param hp set EquipmentStat's hp to this value
+     * @param mana set EquipmentStat's mana to this value
+     * @param stamina set EquipmentStat's stamina to this value
+     * @param armor set EquipmentStat's armor to this value
+     * @param power set EquipmentStat's power to this value
+     * @param attackSpeed set EquipmentStat's attackSpeed to this value
+     */
+    EquipmentStats(double hp, double mana, double stamina, double armor, double power, double attackSpeed) {
         this.hp = hp;
         this.mana = mana;
         this.stamina = stamina;
         this.armor = armor;
         this.power = power;
-        this.haste = haste;
+        this.attackSpeed = attackSpeed;
+    }
+
+    /**
+     * Add another equipmentStats to this equipmentStats (update logic)
+     * thisEquipmentStats.add(values to add)
+     *
+     * @param stats EquipmentStats type
+     */
+    public void add(EquipmentStats stats) {
+        this.hp += stats.getHp();
+        this.mana += stats.getMana();
+        this.stamina += stats.getStamina();
+        this.armor += stats.getArmor();
+        this.power += stats.getPower();
+        this.attackSpeed += stats.getAttackSpeed();
+    }
+
+    /**
+     * Prints the entire EquipmentStats object as String
+     * used for debugging
+     *
+     * @return String
+     */
+    @Override
+    public String toString() {
+        return String.format(
+                """
+                        EquipmentStats:
+                          HP: %.2f
+                          Mana: %.2f
+                          Stamina: %.2f
+                          Armor: %.2f
+                          Power: %.2f
+                          attackSpeed: %.2f""",
+                hp, mana, stamina, armor, power, attackSpeed
+        );
     }
 
     //getters
@@ -42,8 +91,8 @@ public class EquipmentStats {
     public double getPower() {
         return power;
     }
-    public double getHaste() {
-        return haste;
+    public double getAttackSpeed() {
+        return attackSpeed;
     }
 
     //setters
@@ -62,32 +111,7 @@ public class EquipmentStats {
     public void setPower(double power) {
         this.power = power;
     }
-    public void setHaste(double haste) {
-        this.haste = haste;
-    }
-
-    //adders
-    public void add(EquipmentStats stats) {
-        this.hp += stats.getHp();
-        this.mana += stats.getMana();
-        this.stamina += stats.getStamina();
-        this.armor += stats.getArmor();
-        this.power += stats.getPower();
-        this.haste += stats.getHaste();
-    }
-
-    //toString for debug
-    @Override
-    public String toString() {
-        return String.format(
-                "EquipmentStats:\n" +
-                        "  HP: %.2f\n" +
-                        "  Mana: %.2f\n" +
-                        "  Stamina: %.2f\n" +
-                        "  Armor: %.2f\n" +
-                        "  Power: %.2f\n" +
-                        "  Haste: %.2f",
-                hp, mana, stamina, armor, power, haste
-        );
+    public void setAttackSpeed(double attackSpeed) {
+        this.attackSpeed = attackSpeed;
     }
 }

@@ -2,12 +2,15 @@ package space.vestiges.plugin1.commands;
 
 import de.tr7zw.nbtapi.NBT;
 import org.bukkit.Material;
+import org.bukkit.attribute.Attribute;
+import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
+import space.vestiges.plugin1.equipment.EquipmentStats;
 import space.vestiges.plugin1.player.PlayerStats;
 import space.vestiges.plugin1.player.PlayerStatsManager;
 import space.vestiges.plugin1.player.PlayerStatsStorage;
@@ -21,10 +24,12 @@ public class TestStatsCommand implements CommandExecutor {
 
     private final PlayerStatsManager statsManager;
     private final PlayerStatsStorage statsStorage;
+    private final EquipmentManager equipmentManager;
 
     public TestStatsCommand(PlayerStatsManager statsManager, PlayerStatsStorage statsStorage) {
         this.statsManager = statsManager;
         this.statsStorage = statsStorage;
+        this.equipmentManager = new EquipmentManager();
     }
 
     @Override
@@ -52,7 +57,6 @@ public class TestStatsCommand implements CommandExecutor {
                 player.sendMessage("base stamina:  " + stats.getBase_stamina());
                 player.sendMessage("base armor:  " + stats.getBase_armor());
                 player.sendMessage("base power:  " + stats.getBase_power());
-                player.sendMessage("base haste:  " + stats.getBase_haste());
                 player.sendMessage("max HP: " + stats.getMaxHP());
                 player.sendMessage("max Mana: " + stats.getMaxMana());
                 player.sendMessage("max Stamina: " + stats.getMaxStamina());
@@ -61,7 +65,7 @@ public class TestStatsCommand implements CommandExecutor {
                 player.sendMessage("current stamina: " + stats.getCurrentStamina());
                 player.sendMessage("armor: " + stats.getArmor());
                 player.sendMessage("power: " + stats.getPower());
-                player.sendMessage("haste: " + stats.getHaste());
+                player.sendMessage("attackSpeed: " + stats.getAttackSpeed());
             }
             case "add" -> {
                 // Example: Add 10 points to some stat don't use
@@ -91,11 +95,32 @@ public class TestStatsCommand implements CommandExecutor {
                 player.sendMessage("You received a kit with random stats!");
             }
             case "showarmor" -> {
-                EquipmentManager equipment = new EquipmentManager();
-                equipment.getCombinedStats(player);
+                EquipmentStats estats = equipmentManager.getCombinedStats(player);
+                Plugin1.getInstance().getLogger().info(estats.toString());
             }
-            case "toggleflag" -> {
+            case "showstats" -> {
+                PlayerStats pstats = statsManager.getPlayerInfo(player);
+                Plugin1.getInstance().getLogger().info(pstats.toString());
+                player.sendMessage(pstats.toString());
+            }
+            case "loadarmor" -> {
+                // TODO: this is a method I should put in a class see loadPlayerInfo in listeners
+                PlayerStats currentPlayer = statsManager.getPlayerInfo(player);
+                EquipmentManager equipment = new EquipmentManager();
+                currentPlayer.addBaseEquipmentStats(equipment.getCombinedStats(player));
+            }
+            case "toggle" -> {
                 Plugin1.getInstance().toggleflag = !Plugin1.getInstance().toggleflag;
+            }
+            case "maxatkspd" -> {
+                AttributeInstance atkSpd = player.getAttribute(Attribute.ATTACK_SPEED);
+                if (atkSpd.getBaseValue() == 4.0) {
+                    Plugin1.getInstance().getLogger().info("changing default to 1024");
+                    atkSpd.setBaseValue(1024.0); // Very high number to remove cooldown practically
+                } else {
+                    Plugin1.getInstance().getLogger().info("changing 1024 to default");
+                    atkSpd.setBaseValue(4.0);
+                }
             }
 
             default -> player.sendMessage("Unknown action. Use show, add, or remove.");
@@ -112,15 +137,15 @@ public class TestStatsCommand implements CommandExecutor {
         double stamina = Math.random()*5;
         double armor = Math.random()*5;
         double power = Math.random()*5;
-        double haste = Math.random()*5;
+        double atkspd = Math.random()*5;
 
         NBT.modify(item, nbt -> {
-            nbt.setDouble("hp", hp);
-            nbt.setDouble("mana", mana);
-            nbt.setDouble("stamina", stamina);
-            nbt.setDouble("armor", armor);
-            nbt.setDouble("power", power);
-            nbt.setDouble("haste", haste);
+            nbt.setDouble("eqHp", hp);
+            nbt.setDouble("eqMana", mana);
+            nbt.setDouble("eqStamina", stamina);
+            nbt.setDouble("eqArmor", armor);
+            nbt.setDouble("eqPower", power);
+            nbt.setDouble("eqAtkspd", atkspd);
         });
 
         List<String> lore = new ArrayList<>();
@@ -129,7 +154,7 @@ public class TestStatsCommand implements CommandExecutor {
         lore.add("Stamina: " + String.format("%.2f", stamina));
         lore.add("Armor: " + String.format("%.2f", armor));
         lore.add("Power: " + String.format("%.2f", power));
-        lore.add("Haste: " + String.format("%.2f", haste));
+        lore.add("AtkSpd: " + String.format("%.2f", atkspd));
 
         item.setLore(lore);
 

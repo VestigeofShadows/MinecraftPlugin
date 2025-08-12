@@ -47,5 +47,4 @@ public final class Plugin1 extends JavaPlugin {
     public PlayerStatsStorage getStorageManager() {
         return statsStorage;
     }
-
 }

@@ -34,8 +34,7 @@ public class PlayerStatsStorage {
                 base_mana REAL,
                 base_stamina REAL,
                 base_armor REAL,
-                base_power REAL,
-                base_haste REAL
+                base_power REAL
             );
         """;
         try  (Statement stmt = connection.createStatement()) {
@@ -46,7 +45,7 @@ public class PlayerStatsStorage {
     }
     // ADD PLAYER TO DATABASE
     public void addStoredPlayer(@NotNull Player player, PlayerStats stats) {
-        String sql = "INSERT OR REPLACE INTO player_stats (uuid, playername, last_saved, total_xp, base_hp, base_mana, base_stamina, base_armor, base_power, base_haste) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT OR REPLACE INTO player_stats (uuid, playername, last_saved, total_xp, base_hp, base_mana, base_stamina, base_armor, base_power) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
         try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
             pstmt.setString(1, player.getUniqueId().toString());
             pstmt.setString(2, player.getName());
@@ -57,7 +56,6 @@ public class PlayerStatsStorage {
             pstmt.setDouble(7, stats.getBase_stamina());
             pstmt.setDouble(8, stats.getBase_armor());
             pstmt.setDouble(9, stats.getBase_power());
-            pstmt.setDouble(10, stats.getBase_haste());
             pstmt.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -68,7 +66,7 @@ public class PlayerStatsStorage {
         String sql = "";
     }
     public PlayerStats getPlayerStoredStats(@NotNull Player player) {
-        String sql = "SELECT uuid, playername, last_saved, total_xp, base_hp, base_mana, base_stamina, base_armor, base_power, base_haste FROM player_stats WHERE uuid = ?";
+        String sql = "SELECT uuid, playername, last_saved, total_xp, base_hp, base_mana, base_stamina, base_armor, base_power FROM player_stats WHERE uuid = ?";
         try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
             pstmt.setString(1, player.getUniqueId().toString());
             ResultSet rs = pstmt.executeQuery();
@@ -82,8 +80,7 @@ public class PlayerStatsStorage {
                         rs.getDouble("base_mana"),
                         rs.getDouble("base_stamina"),
                         rs.getDouble("base_armor"),
-                        rs.getDouble("base_power"),
-                        rs.getDouble("base_haste")
+                        rs.getDouble("base_power")
                 );
             }
         } catch (SQLException e) {
