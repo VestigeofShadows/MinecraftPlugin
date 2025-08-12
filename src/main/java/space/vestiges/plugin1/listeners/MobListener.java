@@ -33,50 +33,36 @@ public class MobListener implements Listener {
     // Damage event dealt by environment and other entities.
     @EventHandler
     public void onEntityDamage(@NotNull EntityDamageEvent event) {
+        // debug flag
         boolean flag = Plugin1.getInstance().toggleflag;
+        // ignore players, armor stands, and entity-caused damage
+        if (event.getEntity() instanceof Player) return;
+        if (event.getEntity() instanceof ArmorStand) return;
+        if (event instanceof EntityDamageByEntityEvent) return;
+        if (processing.contains(event.getEntity().getUniqueId())) return;
 
-        // ignore armor stands explicitly LOL
-        if ((event.getEntity() instanceof ArmorStand)) return;
-        // ignore players
-        if ((event.getEntity() instanceof Player)) return;
-        // ignore player caused damage (handled separately)
-        if (event.getEntity() instanceof EntityDamageByEntityEvent) return;
+        if (!(event.getEntity() instanceof LivingEntity mob)) return;
 
-        LivingEntity mob = (LivingEntity) event.getEntity();
-        // Check if it's a mythicmob
-        if(mythicHelper.isMythicMob(mob)){
-            ActiveMob mm = mythicHelper.getMythicMobInstance(mob);
-            if (mm != null) {
-                if (flag) {
-                    Plugin1.getInstance().getLogger().info("Mythic mob hit!");
-                }
+        double newHealth = Math.max(0, mob.getHealth() - event.getFinalDamage());
 
-                //mythic mobs hp display
-                hpdisplay.updateHpDisplay(mob, mob.getHealth());
-            }
+        if (mythicHelper.isMythicMob(mob)) {
+            if (flag) Plugin1.getInstance().getLogger().info("Mythic mob hit!");
+            hpdisplay.updateHpDisplay(mob, newHealth, 0);
         } else {
-            //vanilla stuff
-            if (flag) {
-                Plugin1.getInstance().getLogger().info("Vanilla mob hit!");
-            }
-            //vanilla hp display
-            hpdisplay.updateHpDisplay(mob, mob.getHealth());
+            if (flag) Plugin1.getInstance().getLogger().info("Vanilla mob hit!");
+            hpdisplay.updateHpDisplay(mob, newHealth, 0);
         }
     }
     // Damage event dealt by a player.
     @EventHandler
     public void onEntityDamageByEntity(@NotNull EntityDamageByEntityEvent event) {
 
-        //Ignore targets that aren't valid (including other players?)
-        if (!(event.getEntity() instanceof LivingEntity)) return;
+        // ignore invalid entities, players, and dmg event caused by this event
+        if (!(event.getEntity() instanceof LivingEntity target)) return; // LivingEntity target
         if (event.getEntity() instanceof Player) return;
         if (event.getEntity() instanceof ArmorStand) return;
+        if (processing.contains(target.getUniqueId())) return;
 
-        LivingEntity target = (LivingEntity) event.getEntity();
-
-        if (processing.contains(target.getUniqueId())) {
-            return; // EXIT OUT IF TARGET's UUID IS SET (avoid loop)
-        }
         Player attacker = getPlayer(event);
 
         //Ignore attackers that aren't valid
@@ -110,19 +96,19 @@ public class MobListener implements Listener {
 
             if (lethal) {
                 processing.add(target.getUniqueId());
-                double finalDmg_dealt = dmg_dealt;
                 Bukkit.getScheduler().runTask(Plugin1.getInstance(), () -> {
-                    target.damage(finalDmg_dealt, attacker);
+                    target.damage(dmg_dealt, attacker);
                     processing.remove(target.getUniqueId());
-                    hpdisplay.updateHpDisplay(target, target.getHealth());
+                    hpdisplay.updateHpDisplay(target, target.getHealth(), 0);
                 });
             } else {
                 target.setHealth(target.getHealth() - dmg_dealt);
-                hpdisplay.updateHpDisplay(target, target.getHealth());
+                hpdisplay.updateHpDisplay(target, target.getHealth(), 0);
             }
 
         }
     }
+
     @Nullable
     private static Player getPlayer(@NotNull EntityDamageByEntityEvent event) {
         Entity damager = event.getDamager();

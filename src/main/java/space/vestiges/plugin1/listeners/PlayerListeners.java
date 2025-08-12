@@ -1,6 +1,7 @@
 package space.vestiges.plugin1.listeners;
 
 
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -16,22 +17,27 @@ import space.vestiges.plugin1.Plugin1;
 import space.vestiges.plugin1.equipment.EquipmentManager;
 import io.papermc.paper.event.entity.EntityEquipmentChangedEvent;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 public class PlayerListeners implements Listener{
     private final PlayerStatsManager statsManager = Plugin1.getInstance().getStatsManager();
     private final PlayerStatsStorage statsStorage = Plugin1.getInstance().getStorageManager();
-    private final Map<UUID, Long> joinTimes = new HashMap<>();
+    private final Set<UUID> playerJoined = new HashSet<>();
 
+    /**
+     * This event adds base stats to the joining player only!
+     *
+     * @param event The PlayerJoinEvent that is used to parse player data
+     */
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
+
+        Plugin1.getInstance().getLogger().info("Player Join Event Occured!");
         // Get player
         Player player = event.getPlayer();
 
-        // Populate joinTimes with this player so EntityEquipmentChangedEvent doesn't run
-        joinTimes.put(player.getUniqueId(), System.currentTimeMillis());
+        // Put player in hashset
+        playerJoined.add(player.getUniqueId());
 
         // If player exists in storage, add to active memory, else create it and add it in active and database
         if (statsStorage.playerExists(player)) {
@@ -55,7 +61,7 @@ public class PlayerListeners implements Listener{
     public void onPlayerQuit(PlayerQuitEvent event) {
         // Get player
         Player player = event.getPlayer();
-        Plugin1.getInstance().getLogger().info("Removed " + player.getName() + " from active players memory");
+        Plugin1.getInstance().getLogger().info("Removed " + player.getName() + " from active players memory and hashset");
         statsManager.removeActivePlayer(player);
     }
 
@@ -67,16 +73,17 @@ public class PlayerListeners implements Listener{
     @EventHandler
     public void onEntityEquipmentChange(EntityEquipmentChangedEvent event) {
 
+
         // Check if entity is player, ignore all other Equipment change events
         if (!(event.getEntity() instanceof Player)) { return; }
+        Plugin1.getInstance().getLogger().info("Player triggered EECE");
 
         // Get the player
         Player player = (Player) event.getEntity();
 
-        // Ignore player join events
-        long joinTime = joinTimes.getOrDefault(player.getUniqueId(), 0L);
-        if (System.currentTimeMillis() - joinTime < 1000) { // 1 second grace
-            return;
+        if (playerJoined.contains(player.getUniqueId())) {
+
+            //return;
         }
 
         // grab the player's playerstat
@@ -122,31 +129,27 @@ public class PlayerListeners implements Listener{
                 }
             }
         }
+
+        if (playerJoined.contains(player.getUniqueId())) {
+            Plugin1.getInstance().getLogger().info("EECE Player Joined Event, setting current HP/MANA/STAMINA");
+            current.setCurrentHP(current.getMaxHP());
+            current.setCurrentMana(current.getMaxMana());
+            current.setCurrentStamina(current.getMaxStamina());
+        }
     }
 
-    // Loads player from database on player join, fill in all fields
+    // Loads player from database on player join
     public void initialLoadPlayerInfo(Player player) {
+        Plugin1.getInstance().getLogger().info("player join event");
         // add stored stats to active stats (base stats)
         statsManager.addActivePlayer(player, statsStorage.getPlayerStoredStats(player));
         // find current player in the hashmap
         PlayerStats currentPlayer = statsManager.getPlayerInfo(player);
-        // add equipment stats
-        EquipmentManager equipment = new EquipmentManager();
-        currentPlayer.addBaseEquipmentStats(equipment.getCombinedStats(player));
-        // add mainhand stats, and default attackspeed 4 if not valid mainhand
-
-        //TODO: currentPlayer.setAttackSpeed(2.0);
-
-        // CALCULATE ALL STATS FUNCTION
-        // CALCULATE LEVEL (from totalxp) TODO: implement buffs
-        // CALCULATE maxHP (from base + gear) (no buffs) DONE
-        // CALCULATE maxMANA (from base + gear) (no buffs) DONE
-        // CALCULATE maxSTAMINA (from base + gear) (no buffs) DONE
-        // CALCULATE ARMOR (from base + gear) (no buffs) DONE
-        // CALCULATE POWER (from base + gear) (no buffs) DONE
-        // CALCULATE AtkSpd (from gear (Mainhand) (no buffs) DONE
-
-        // currentPlayer.setMaxHP();
+        // Load base stats!
+        currentPlayer.setAttackSpeed(2.0);
+        currentPlayer.setCurrentHP(1.0); // just so you don't insta die lmao
+        // Set playerJoined, so EECE can detect
+        playerJoined.remove(player.getUniqueId());
     }
     // Only loads Equipment TODO: implement buffs
     public void loadPlayerInfo(Player player) {

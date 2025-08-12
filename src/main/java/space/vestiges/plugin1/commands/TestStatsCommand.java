@@ -132,12 +132,12 @@ public class TestStatsCommand implements CommandExecutor {
     private ItemStack createRandomStatItem(Material material) {
         ItemStack item = new ItemStack(material);
 
-        double hp = Math.random()*5;
-        double mana = Math.random()*5;
-        double stamina = Math.random()*5;
-        double armor = Math.random()*5;
-        double power = Math.random()*5;
-        double atkspd = Math.random()*5;
+        double hp = Math.round(Math.random() * 5.0 * 1000.0) / 1000.0;
+        double mana = Math.round(Math.random() * 5.0 * 1000.0) / 1000.0;
+        double stamina = Math.round(Math.random() * 5.0 * 1000.0) / 1000.0;
+        double armor = Math.round(Math.random() * 5.0 * 1000.0) / 1000.0;
+        double power = Math.round(Math.random() * 5.0 * 1000.0) / 1000.0;
+        double atkspd = Math.round(Math.random() * 5.0 * 1000.0) / 1000.0;
 
         NBT.modify(item, nbt -> {
             nbt.setDouble("eqHp", hp);
