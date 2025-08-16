@@ -1,6 +1,8 @@
 package space.vestiges.plugin1.commands;
 
 import de.tr7zw.nbtapi.NBT;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
 import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
@@ -98,6 +100,7 @@ public class TestStatsCommand implements CommandExecutor {
             }
             case "maxatkspd" -> {
                 AttributeInstance atkSpd = player.getAttribute(Attribute.ATTACK_SPEED);
+                assert atkSpd != null; //eh
                 if (atkSpd.getBaseValue() == 4.0) {
                     Plugin1.getInstance().getLogger().info("changing default to 1024");
                     atkSpd.setBaseValue(1024.0); // Very high number to remove cooldown practically
@@ -121,7 +124,7 @@ public class TestStatsCommand implements CommandExecutor {
         double stamina = Math.round(Math.random() * 5.0 * 1000.0) / 1000.0;
         double armor = Math.round(Math.random() * 5.0 * 1000.0) / 1000.0;
         double power = Math.round(Math.random() * 5.0 * 1000.0) / 1000.0;
-        double atkspd = Math.round(Math.random() * 5.0 * 1000.0) / 1000.0;
+        double atkspd = Math.round(Math.random() * 1.0 * 1000.0) / 1000.0;
 
         NBT.modify(item, nbt -> {
             nbt.setDouble("eqHp", hp);
@@ -132,15 +135,15 @@ public class TestStatsCommand implements CommandExecutor {
             nbt.setDouble("eqAtkspd", atkspd);
         });
 
-        List<String> lore = new ArrayList<>();
-        lore.add("HP: " + String.format("%.2f", hp));
-        lore.add("Mana: " + String.format("%.2f", mana));
-        lore.add("Stamina: " + String.format("%.2f", stamina));
-        lore.add("Armor: " + String.format("%.2f", armor));
-        lore.add("Power: " + String.format("%.2f", power));
-        lore.add("AtkSpd: " + String.format("%.2f", atkspd));
+        List<Component> lore2 = new ArrayList<>();
+        lore2.add(Component.text("HP: " + String.format("%.2f", hp)));
+        lore2.add(Component.text("Mana: " + String.format("%.2f", mana)));
+        lore2.add(Component.text("Stamina: " + String.format("%.2f", stamina)));
+        lore2.add(Component.text("Armor: " + String.format("%.2f", armor)));
+        lore2.add(Component.text("Power: " + String.format("%.2f", power)));
+        lore2.add(Component.text("AtkSpd: " + String.format("%.2f", atkspd)));
 
-        item.setLore(lore);
+        item.lore(lore2);
 
         return item;
     }
