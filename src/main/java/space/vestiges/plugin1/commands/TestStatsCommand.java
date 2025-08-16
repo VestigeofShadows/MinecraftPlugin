@@ -40,7 +40,7 @@ public class TestStatsCommand implements CommandExecutor {
         }
 
         if (args.length == 0) {
-            player.sendMessage("Usage: /p <show|add|remove|reloadme> don't run remove");
+            player.sendMessage("Usage: /p <show|getkit|showarmor|showstats|loadarmor|toggle|maxatkspd> don't run remove");
             return true;
         }
 
@@ -66,22 +66,6 @@ public class TestStatsCommand implements CommandExecutor {
                 player.sendMessage("armor: " + stats.getArmor());
                 player.sendMessage("power: " + stats.getPower());
                 player.sendMessage("attackSpeed: " + stats.getAttackSpeed());
-            }
-            case "add" -> {
-                // Example: Add 10 points to some stat don't use
-                PlayerStats stats = statsManager.getPlayerInfo(player);
-                stats.setCurrentHP(stats.getCurrentHP() + 10);
-                player.sendMessage("Added 10 points! New points: " + stats.getCurrentHP());
-            }
-            case "remove" -> {
-                // don't use unless u want the thing break lmao
-                statsManager.removeActivePlayer(player);
-                player.sendMessage("Your stats removed from memory. Not storage though");
-            }
-            case "reloadme" -> {
-                // read from json to active
-                // statsManager.addActivePlayer(player, statsStorage.getPlayerStoredStats(player));
-                Plugin1.getInstance().getLogger().info("This command doesn't do shit rn");
             }
             case "getkit" -> {
                 ItemStack helm = createRandomStatItem(Material.DIAMOND_HELMET);
