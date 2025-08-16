@@ -25,14 +25,21 @@ repositories {
         name = "CodeMC"
         url = uri("https://repo.codemc.io/repository/maven-public/")
     }
+    maven {
+        name = "ProtocolLib"
+        url "https://repo.dmulloy2.net/repository/public/"
+    }
     flatDir {
         dirs 'libs'
     }
+
 }
 
 dependencies {
     compileOnly("io.papermc.paper:paper-api:1.21.5-R0.1-SNAPSHOT")
-    compileOnly name: "MythicMobs-${mythicVersion}"
+    compileOnly "net.dmulloy2:ProtocolLib:5.4.0"
+    //compileOnly name: "MythicMobs-${mythicVersion}"
+    compileOnly(files("libs/MythicMobs-${mythicVersion}.jar"))
     implementation("de.tr7zw:item-nbt-api-plugin:2.15.1")
     implementation 'com.google.code.gson:gson:2.13.1'
     implementation 'org.xerial:sqlite-jdbc:3.45.1.0'

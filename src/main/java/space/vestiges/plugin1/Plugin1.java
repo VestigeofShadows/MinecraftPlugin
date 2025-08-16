@@ -1,5 +1,7 @@
 package space.vestiges.plugin1;
 
+import com.comphenix.protocol.ProtocolLibrary;
+import com.comphenix.protocol.ProtocolManager;
 import space.vestiges.plugin1.commands.TestStatsCommand;
 import space.vestiges.plugin1.listeners.MobListener;
 import space.vestiges.plugin1.listeners.PlayerListeners;
@@ -9,6 +11,7 @@ import space.vestiges.plugin1.player.PlayerStatsStorage;
 
 public final class Plugin1 extends JavaPlugin {
     private static Plugin1 instance;
+    private ProtocolManager protocolManager;
     private PlayerStatsManager statsManager;
     private PlayerStatsStorage statsStorage;
     public boolean toggleflag = false;
@@ -18,6 +21,7 @@ public final class Plugin1 extends JavaPlugin {
         // Plugin startup logic
         // Initialization
         instance = this;
+        protocolManager = ProtocolLibrary.getProtocolManager();
         statsStorage = new PlayerStatsStorage();
         statsManager = new PlayerStatsManager();
         statsStorage.initStorage(); // Creates Folder + player_stats.db if not exist
@@ -41,6 +45,7 @@ public final class Plugin1 extends JavaPlugin {
     public static Plugin1 getInstance() {
         return instance;
     }
+    public ProtocolManager getProtocolManager() { return protocolManager; }
     public PlayerStatsManager getStatsManager() {
         return statsManager;
     }
