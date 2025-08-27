@@ -118,25 +118,38 @@ public final class FloatingTextPacket {
     /**
      * Helper function for spawntext
      * makes a component for the dmg number with different colors
+     * 0 for player dealt damage (physical)
+     * 1 for environmental damage
+     * 2 for magical damage (not implemented)
      * @param dmg the amount of damage to display
      * @param color the color of the component
      * @return returns the Component
      */
     @NotNull
     private static Component getComponent(double dmg, int color) {
+
         Component dmgnumber;
-        String damage = String.format("\uD83D\uDCA5%.1f\uD83D\uDCA5", dmg);
+        String damage;
+
         switch (color) {
             case 0:
-                dmgnumber = Component.text(damage, NamedTextColor.YELLOW);
-                if (Plugin1.getInstance().toggleflag) System.out.println("yellow dmg");
+                damage = String.format("\uD83D\uDCA5%.1f\uD83D\uDCA5", dmg);
+                dmgnumber = Component.text(damage, NamedTextColor.RED);
+                if (Plugin1.getInstance().toggleflag) System.out.println("physical dmg");
                 break;
             case 1:
-                dmgnumber = Component.text(damage, NamedTextColor.GREEN);
-                if (Plugin1.getInstance().toggleflag) System.out.println("green dmg");
+                damage = String.format("☠%.1f☠", dmg);
+                dmgnumber = Component.text(damage, NamedTextColor.DARK_GREEN);
+                if (Plugin1.getInstance().toggleflag) System.out.println("environment dmg");
+                break;
+            case 2:
+                damage = String.format("✨%.1f✨", dmg);
+                dmgnumber = Component.text(damage, NamedTextColor.DARK_AQUA); // can try LIGHT_PURPLE or AQUA
+                if (Plugin1.getInstance().toggleflag) System.out.println("magic dmg");
                 break;
             default:
-                dmgnumber = Component.text("UnknownColorSendHelp", NamedTextColor.RED);
+                damage = String.format("%.1f", dmg);
+                dmgnumber = Component.text("UnknownColorSendHelp", NamedTextColor.LIGHT_PURPLE);
                 if (Plugin1.getInstance().toggleflag) System.out.println("FloatingTextPacket.getComponent Error");
         }
         return dmgnumber;
