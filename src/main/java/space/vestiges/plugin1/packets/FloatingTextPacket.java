@@ -139,7 +139,7 @@ public final class FloatingTextPacket {
                 break;
             case 1:
                 damage = String.format("☠%.1f☠", dmg);
-                dmgnumber = Component.text(damage, NamedTextColor.DARK_GREEN);
+                dmgnumber = Component.text(damage, NamedTextColor.GOLD);
                 if (Plugin1.getInstance().toggleflag) System.out.println("environment dmg");
                 break;
             case 2:
