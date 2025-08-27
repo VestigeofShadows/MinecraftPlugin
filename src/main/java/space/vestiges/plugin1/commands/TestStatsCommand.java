@@ -34,6 +34,15 @@ public class TestStatsCommand implements CommandExecutor {
         this.equipmentManager = new EquipmentManager();
     }
 
+    /**
+     * use /p
+     *
+     * @param sender Source of the command
+     * @param command Command which was executed
+     * @param label Alias of the command which was used
+     * @param args Passed command arguments
+     * @return boolean, but it just returns true for now...
+     */
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String[] args) {
         if (!(sender instanceof Player player)) {
