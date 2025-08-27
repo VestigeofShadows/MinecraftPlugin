@@ -9,7 +9,10 @@ import org.bukkit.plugin.java.JavaPlugin;
 import space.vestiges.plugin1.player.PlayerStatsManager;
 import space.vestiges.plugin1.player.PlayerStatsStorage;
 
+import java.util.Objects;
+
 public final class Plugin1 extends JavaPlugin {
+
     private static Plugin1 instance;
     private ProtocolManager protocolManager;
     private PlayerStatsManager statsManager;
@@ -33,7 +36,7 @@ public final class Plugin1 extends JavaPlugin {
         getServer().getPluginManager().registerEvents(mobListener, this);
 
         //Commands
-        this.getCommand("p").setExecutor(new TestStatsCommand(statsManager, statsStorage));
+        Objects.requireNonNull(this.getCommand("p")).setExecutor(new TestStatsCommand(statsManager, statsStorage));
     }
 
     @Override

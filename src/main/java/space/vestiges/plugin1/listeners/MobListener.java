@@ -19,6 +19,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import space.vestiges.plugin1.Plugin1;
 import space.vestiges.plugin1.mob.MobHpDisplay;
+import space.vestiges.plugin1.packets.FloatingTextPacket;
 import space.vestiges.plugin1.player.PlayerStats;
 import space.vestiges.plugin1.player.PlayerStatsManager;
 import net.kyori.adventure.text.Component;
@@ -46,7 +47,8 @@ public class MobListener implements Listener {
     private final CooldownManager cooldownManager = new CooldownManager();
     // private final Set<UUID> processing = new HashSet<>();
 
-
+    //Testing Block
+    FloatingTextPacket ftp = new FloatingTextPacket();
 
     // &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
     // ----------------------------------------------------------------------------------
@@ -104,7 +106,7 @@ public class MobListener implements Listener {
      * @param event EntityDamageEvent
      */
     @EventHandler
-    public void onEntityDamageNotByPlayer(@NotNull EntityDamageEvent event) {
+    public void onEntityDamageEnvironment(@NotNull EntityDamageEvent event) {
         // ignore players, armor stands, and entity-caused damage, initializes name if not there
         if (event.getEntity() instanceof Player) return;
         if (event.getEntity() instanceof ArmorStand) return;
@@ -271,11 +273,11 @@ public class MobListener implements Listener {
         // TODO: lol, im tired please help
         PlayerStats stats = statsManager.getPlayerInfo(attacker);
         double finalDmg = event.getFinalDamage();
-
         //----------------------- Damage Calculation -----------------------
 
         //----------------------- Health Display ---------------------------
         hpdisplay.updateHpDisplay(target, Math.max(0, target.getHealth() - event.getFinalDamage()), mobsName.get(target.getUniqueId()));
+        ftp.spawntext(target, attacker, finalDmg);
         //----------------------- Health Display ---------------------------
     }
 
@@ -330,14 +332,21 @@ public class MobListener implements Listener {
     }
 
     /**
+     * Checks if entity's name is already in the map, only put entity in map if it's damaged by a player
+     *
+     */
+    private boolean isCustomNameInMap(LivingEntity entity) {
+        return mobsName.containsKey(entity.getUniqueId());
+    }
+
+    /**
      * Puts an entity's name into the hashmap if not exist
      *
      * @param entity put this entity's component name into the hashmap
      */
     private void putCustomNameInMap(LivingEntity entity) {
-
-        // return if it exists already
-        if (mobsName.containsKey(entity.getUniqueId())) { return; }
+        
+        if (isCustomNameInMap(entity)) { return; }
 
         Component name;
         // Check if mythic
