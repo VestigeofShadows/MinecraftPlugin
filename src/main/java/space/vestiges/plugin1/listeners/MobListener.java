@@ -43,7 +43,6 @@ public class MobListener implements Listener {
     PlayerStatsManager statsManager = Plugin1.getInstance().getStatsManager();
 
     // Hashmaps
-    private final HashMap<UUID, Component> mobsName = new HashMap<UUID, Component>();
     private final CooldownManager cooldownManager = new CooldownManager();
     // private final Set<UUID> processing = new HashSet<>();
 
@@ -55,19 +54,6 @@ public class MobListener implements Listener {
     // ------------------------------ Class Functions  ----------------------------------
     // ----------------------------------------------------------------------------------
     // &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
-
-    /**
-     * currently not used, because I'm trying to save memory
-     *
-     * @param event pass in the entityspawnevent
-     */
-    @EventHandler
-    public void onEntitySpawn(@NotNull EntitySpawnEvent event) {
-        // ignore invalid entities, players, armorstands, and initializes name if mythic mob
-        if (!(event.getEntity() instanceof LivingEntity mob)) return;
-        if (event.getEntity() instanceof Player) return;
-        if (event.getEntity() instanceof ArmorStand) return;
-    }
 
     /**
      * On mythic mob spawn, immediate display their name using hpdisplay
@@ -82,8 +68,8 @@ public class MobListener implements Listener {
         // Scheduler to display hp on the next tick because mythic mobs initializes the mob to be a mythic mob after the mob spawn event...
         // Can't cancel the event or the mob won't spawn, not even sure what this EventHandler is good for
         Bukkit.getScheduler().runTask(Plugin1.getInstance(), () -> {
-            putCustomNameInMap(mob);
-            hpdisplay.updateHpDisplay(mob, HealthUtils.getMaxHealth(mob), mobsName.get(event.getEntity().getUniqueId()));
+            hpdisplay.mobsBaseNameAdd(mob);
+            hpdisplay.updateHpDisplay(mob, HealthUtils.getMaxHealth(mob));
         });
     }
 
@@ -96,7 +82,7 @@ public class MobListener implements Listener {
     public void onEntityDeath(@NotNull EntityDeathEvent event) {
         // Memory-leak management, remove mob from hashmaps on their death.
         cooldownManager.removeMobOnDeath(event.getEntity());
-        mobsName.remove(event.getEntity().getUniqueId());
+        hpdisplay.mobsBaseNameDelete(event.getEntity());
     }
 
     /**
@@ -112,7 +98,6 @@ public class MobListener implements Listener {
         if (event.getEntity() instanceof ArmorStand) return;
         if (event instanceof EntityDamageByEntityEvent) return;
         if (!(event.getEntity() instanceof LivingEntity mob)) return;
-        putCustomNameInMap(mob);
 
         //------------------- Set mob to have no dmg ticks --------------------
         if (!(mob.getMaximumNoDamageTicks() == 0)) {
@@ -131,16 +116,13 @@ public class MobListener implements Listener {
         //------------------------- Health Display Section -------------------------
         // Actual display of health, need this if you want any damage to trigger health display
         // (fishes are bugged to take dmg on spawn, this may or may not affect it)
-         /*
-        // double newHealth = Math.max(0, mob.getHealth() - event.getFinalDamage());
-        /*
-        if (mythicHelper.isMythicMob(mob)) {
-            hpdisplay.updateHpDisplay(mob, newHealth, mobsName.get(event.getEntity().getUniqueId()));
-        } else {
-            hpdisplay.updateHpDisplay(mob, newHealth, mobsName.get(event.getEntity().getUniqueId()));
-        }
 
-          */
+        // display updated health if basename exist, otherwise don't.
+        if (hpdisplay.mobsBaseNameExist(mob)) {
+            double newHealth = Math.max(0, mob.getHealth() - event.getFinalDamage());
+            hpdisplay.mobsBaseNameAdd(mob);
+            hpdisplay.updateHpDisplay(mob, newHealth);
+        }
         //------------------------- Health Display Section -------------------------
     }
 
@@ -253,8 +235,7 @@ public class MobListener implements Listener {
         if (!(event.getEntity() instanceof LivingEntity target)) return;
         if (event.getEntity() instanceof Player) return;
         if (event.getEntity() instanceof ArmorStand) return;
-        if (!(getPlayer(event) instanceof Player attacker)) return;
-        putCustomNameInMap(target);
+        if (!(getDamageSource(event) instanceof Player attacker)) return;
 
         //------------------- Set mob to have no dmg ticks --------------------
         if (!(target.getMaximumNoDamageTicks() == 0)) {
@@ -276,7 +257,9 @@ public class MobListener implements Listener {
         //----------------------- Damage Calculation -----------------------
 
         //----------------------- Health Display ---------------------------
-        hpdisplay.updateHpDisplay(target, Math.max(0, target.getHealth() - event.getFinalDamage()), mobsName.get(target.getUniqueId()));
+        double newHealth = Math.max(0, target.getHealth() - event.getFinalDamage());
+        hpdisplay.mobsBaseNameAdd(target);
+        hpdisplay.updateHpDisplay(target, newHealth);
         ftp.spawntext(target, attacker, finalDmg);
         //----------------------- Health Display ---------------------------
     }
@@ -310,7 +293,7 @@ public class MobListener implements Listener {
      * @return finds the Player entity that caused the source of the damage
      */
     @Nullable
-    private static Player getPlayer(@NotNull EntityDamageByEntityEvent event) {
+    private static Player getDamageSource(@NotNull EntityDamageByEntityEvent event) {
         Entity damager = event.getDamager();
         Player attacker;
 
@@ -329,41 +312,5 @@ public class MobListener implements Listener {
             attacker = null;
         }
         return attacker;
-    }
-
-    /**
-     * Checks if entity's name is already in the map, only put entity in map if it's damaged by a player
-     *
-     */
-    private boolean isCustomNameInMap(LivingEntity entity) {
-        return mobsName.containsKey(entity.getUniqueId());
-    }
-
-    /**
-     * Puts an entity's name into the hashmap if not exist
-     *
-     * @param entity put this entity's component name into the hashmap
-     */
-    private void putCustomNameInMap(LivingEntity entity) {
-        
-        if (isCustomNameInMap(entity)) { return; }
-
-        Component name;
-        // Check if mythic
-        if (mythicHelper.isMythicMob(entity)) {
-            String mythicname = mythicHelper.getMythicMobInstance(entity).getName();
-            name = Component.text(mythicname);
-            Plugin1.getInstance().getLogger().info("putCustomName called mythic mob detected: " + name.toString());
-        } else {
-            name = entity.customName();
-            if (name == null) { //if not custom, create component name version of it
-                String vanillaName = entity.getType().name();
-                vanillaName = vanillaName.toLowerCase().replace("_"," ");
-                vanillaName = vanillaName.substring(0,1).toUpperCase() + vanillaName.substring(1);
-                name = Component.text(vanillaName).color(NamedTextColor.GREEN);
-                Plugin1.getInstance().getLogger().info("putCustomName called vanilla mob name: " + name.toString());
-            }
-        }
-        mobsName.put(entity.getUniqueId(), name);
     }
 }

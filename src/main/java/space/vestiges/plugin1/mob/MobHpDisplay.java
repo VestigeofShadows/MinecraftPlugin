@@ -11,12 +11,28 @@ import space.vestiges.plugin1.utils.HealthUtils;
 import java.util.HashMap;
 import java.util.UUID;
 
+//TODO encapsulate mobsName to here
+
 public class MobHpDisplay {
 
     private static final BukkitAPIHelper mythicHelper = new BukkitAPIHelper();
-    private final HashMap<UUID, Component> mobsName = new HashMap<UUID, Component>();
+    private final HashMap<UUID, Component> mobsBaseName = new HashMap<>();
 
-    public static Component healthDisplay(LivingEntity entity, double currentHp, double maxHp, Component basename) {
+    /**
+     * Helper function for updateHpDisplay
+     * Creates a component name for a mob based on their hp.
+     *
+     * @param entity the entity to display hp for
+     * @param currentHp what hp to display for current hp
+     * @param maxHp what hp to display for max hp
+     * @return component of the name
+     */
+    public Component healthDisplay(LivingEntity entity, double currentHp, double maxHp) {
+
+        if (!mobsBaseNameExist(entity)) { // DEBUG DEBUG DEBUG DEBUG DEBUG
+            System.out.println("Mobname doesn't exist but updateHpDisplay is called");
+        }
+        Component basename = mobsBaseName.get(entity.getUniqueId());
 
         int level = 1;
 
@@ -45,16 +61,71 @@ public class MobHpDisplay {
     }
 
     /**
-     * Updates an entity's hp, and displays it.
+     * Updates an entity's current hp, and displays it.
      *
      * @param entity LivingEntity to display hp
      * @param currentHp the entity's current health as double
-     * @param basename the base name of the mob as Component
      */
-    public void updateHpDisplay(LivingEntity entity, double currentHp, Component basename) {
+    public void updateHpDisplay(LivingEntity entity, double currentHp) {
         double maxhp = HealthUtils.getMaxHealth(entity);
-        Component healthDisplay = healthDisplay(entity, currentHp, maxhp, basename);
+        Component healthDisplay = healthDisplay(entity, currentHp, maxhp);
         entity.customName(healthDisplay);
         entity.setCustomNameVisible(true);
+    }
+
+    /**
+     * returns boolean of if the mob basename exist in hashmap
+     *
+     * @param entity input mob
+     * @return if mob basename exist bool
+     */
+    public boolean mobsBaseNameExist(LivingEntity entity) {
+        return mobsBaseName.containsKey(entity.getUniqueId());
+    }
+
+    /**
+     * removes basename from hashmap to save memory
+     * @param entity entity to remove
+     */
+    public void mobsBaseNameDelete(LivingEntity entity) {
+        mobsBaseName.remove(entity.getUniqueId()); //don't need to check if it exists first
+    }
+
+    /**
+     * Put an entity's basename component into hashmap if it doesn't exist yet
+     *
+     * @param entity put this entity's component name into the hashmap
+     */
+    public void mobsBaseNameAdd(LivingEntity entity) {
+        // Check if name exist yet, if not return error
+        if (mobsBaseNameExist(entity)) {
+            Plugin1.getInstance().getLogger().warning("MobHpDisplay.mobsBaseNameAdd error"); //the name should already be added before this method is called
+            return;
+        }
+
+        // initiate variable
+        Component name;
+
+        // check if mob is mythic
+        if (mythicHelper.isMythicMob(entity)) {
+            String mythicName = mythicHelper.getMythicMobInstance(entity).getName();
+            name = Component.text(mythicName);
+            Plugin1.getInstance().getLogger().warning("MobHpDisplay.mobsBaseNameAdd: mythic mob detected: " + name.toString());
+        } else {
+            //Check if entity already have a custom name made by players
+            name = entity.customName();
+            // If it doesn't have a custom name already, use vanilla name
+            if (name == null) {
+                String vanillaName = entity.getType().name();
+                vanillaName = vanillaName.toLowerCase().replace("_"," ");
+                vanillaName = vanillaName.substring(0,1).toUpperCase() + vanillaName.substring(1);
+                name = Component.text(vanillaName).color(NamedTextColor.GREEN);
+                Plugin1.getInstance().getLogger().info("MobHpDisplay.mobsBaseNameAdd: vanilla mob detected: " + name.toString());
+            }
+            Plugin1.getInstance().getLogger().info("MobHpDisplay.mobsBaseNameAdd: named vanilla mob detected: " + name.toString());
+        }
+
+        mobsBaseName.put(entity.getUniqueId(), name);
+
     }
 }
