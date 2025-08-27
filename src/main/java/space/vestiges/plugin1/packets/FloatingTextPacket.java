@@ -13,7 +13,12 @@ import org.joml.Vector3f;
 import space.vestiges.plugin1.Plugin1;
 
 public final class FloatingTextPacket {
-    private final ProtocolManager pm = Plugin1.getInstance().getProtocolManager();
+
+    // &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+    // ----------------------------------------------------------------------------------
+    // ------------------------------ Class Functions  ----------------------------------
+    // ----------------------------------------------------------------------------------
+    // &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
 
     /**
      * This function spawns a text displaying damage dealt at a target's location

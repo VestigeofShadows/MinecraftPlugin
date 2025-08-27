@@ -37,19 +37,6 @@ public class CooldownManager {
     // &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
 
     /**
-     * Initializes mob to put into the hashmap
-     *
-     * @param mob the mob to be initialized
-     */
-    private void mobInitialized(LivingEntity mob) {
-        // if mob doesn't exist, add it to the hashmap
-        if (!(mobHitTimestamps.containsKey(mob.getUniqueId()))){
-            Map<UUID, Long> map = new HashMap<>();
-            mobHitTimestamps.put(mob.getUniqueId(), map);
-        }
-    }
-
-    /**
      * Takes in mob being hit, the current time, returns boolean for whether attack is valid or not
      *
      * @param mob takes in the entity to track
@@ -74,9 +61,9 @@ public class CooldownManager {
             return true;
         } else {
             // calculate elapsed time to see if it's valid
-            Long lastAttackedTime = mobmap.get(UNKNOWN_SOURCE);
-            Long currentTime = System.currentTimeMillis();
-            Long elapsed = (currentTime - lastAttackedTime);
+            long lastAttackedTime = mobmap.get(UNKNOWN_SOURCE);
+            long currentTime = System.currentTimeMillis();
+            long elapsed = (currentTime - lastAttackedTime);
 
             // return valid if >= 500, otherwise return false and cancel event
             if (elapsed >= 500) {
@@ -112,9 +99,9 @@ public class CooldownManager {
             return true;
         } else {
             // calculate elapsed time to see if it's valid
-            Long lastAttackedTime = mobmap.get(player.getUniqueId());
-            Long currentTime = System.currentTimeMillis();
-            Long elapsed = (currentTime - lastAttackedTime);
+            long lastAttackedTime = mobmap.get(player.getUniqueId());
+            long currentTime = System.currentTimeMillis();
+            long elapsed = (currentTime - lastAttackedTime);
 
             // return valid if >= (CHECK WEAPON ATTACK SPEED), otherwise return false and cancel event
             if (elapsed >= 0) { //500 for .5s
@@ -127,18 +114,31 @@ public class CooldownManager {
         }
     }
 
-    //TODO standing in fire seems to set damage ticks?
-
     /**
      * Remove mob from mobHitTimestamps to prevent memory leak.
      *
      * @param mob the dead mob to remove
      */
     public void removeMobOnDeath(LivingEntity mob) {
-        if (mobHitTimestamps.containsKey(mob.getUniqueId())) {
-            //Plugin1.getInstance().getLogger().info("Removed mob from timestamps on death");
-            mobHitTimestamps.remove(mob.getUniqueId());
+        mobHitTimestamps.remove(mob.getUniqueId());
+    }
+
+    // &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+    // ----------------------------------------------------------------------------------
+    // -------------------------     HELPER FUNCTIONS     -------------------------------
+    // ----------------------------------------------------------------------------------
+    // &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+
+    /**
+     * Helper function
+     * Initializes mob to put into the hashmap
+     * @param mob the mob to be initialized
+     */
+    private void mobInitialized(LivingEntity mob) {
+        // if mob doesn't exist, add it to the hashmap
+        if (!(mobHitTimestamps.containsKey(mob.getUniqueId()))){
+            Map<UUID, Long> map = new HashMap<>();
+            mobHitTimestamps.put(mob.getUniqueId(), map);
         }
     }
-    // player left
 }
