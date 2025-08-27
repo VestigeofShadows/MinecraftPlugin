@@ -94,9 +94,10 @@ public class MobListener implements Listener {
         //------------------------- Immunity Table -------------------------
 
         //------------------------- Health Display Section -------------------------
-        // Actual display of health, need this if you want any damage to trigger health display
+        // shows damage number
+        double eventDmg = event.getFinalDamage();
+        ftp.spawntext(mob, eventDmg, 1);
         // (fishes are bugged to take dmg on spawn, this may or may not affect it)
-
         // display updated health if basename exist, otherwise don't.
         if (mobHpDisplay.mobsBaseNameExist(mob)) {
             double newHealth = Math.max(0, mob.getHealth() - event.getFinalDamage());
@@ -136,15 +137,13 @@ public class MobListener implements Listener {
         //----------------------- Health Display ---------------------------
         double newHealth = Math.max(0, target.getHealth() - event.getFinalDamage());
         mobHpDisplay.updateHpDisplay(target, newHealth);
-        ftp.spawntext(target, attacker, finalDmg);
+        ftp.spawntext(target, attacker, finalDmg, 0);
         //----------------------- Health Display ---------------------------
     }
 
-
-
     // &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
     // ----------------------------------------------------------------------------------
-    // ------------------------- HELPER FUNCTION / UNUSED -------------------------------
+    // -------------------------     HELPER FUNCTIONS     -------------------------------
     // ----------------------------------------------------------------------------------
     // &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
 

@@ -39,7 +39,7 @@ dependencies {
     compileOnly("io.papermc.paper:paper-api:1.21.5-R0.1-SNAPSHOT")
     compileOnly "net.dmulloy2:ProtocolLib:5.4.0"
     compileOnly(files("libs/MythicMobs-${mythicVersion}.jar"))
-    implementation("de.tr7zw:item-nbt-api-plugin:2.15.1")
+    implementation("de.tr7zw:item-nbt-api-plugin:2.15.2")
     implementation 'org.xerial:sqlite-jdbc:3.45.1.0'
 }
 
@@ -71,7 +71,7 @@ tasks.withType(JavaCompile).configureEach {
 }
 
 jar {
-    //sorcery
+    //sorcery (where to put the jar after it's built) TODO change this later
     destinationDirectory = file("A:/minecraft_plugin_devserver/plugins")
     archiveFileName = 'Plugin1.jar'
 }
