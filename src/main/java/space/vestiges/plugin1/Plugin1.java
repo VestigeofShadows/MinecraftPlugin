@@ -1,7 +1,7 @@
 package space.vestiges.plugin1;
 
-import com.comphenix.protocol.ProtocolLibrary;
-import com.comphenix.protocol.ProtocolManager;
+// import com.comphenix.protocol.ProtocolLibrary;
+// import com.comphenix.protocol.ProtocolManager;
 import space.vestiges.plugin1.commands.TestStatsCommand;
 import space.vestiges.plugin1.listeners.MobListener;
 import space.vestiges.plugin1.listeners.PlayerListeners;
@@ -15,20 +15,19 @@ import java.util.Objects;
 public final class Plugin1 extends JavaPlugin {
 
     private static Plugin1 instance;
-    private ProtocolManager protocolManager;
+    //private ProtocolManager protocolManager;
     private PlayerStatsManager statsManager;
     private PlayerStatsStorage statsStorage;
-    public boolean toggleflag = false;
     private PlayerHud playerHud;
-    private PlayerListeners PlayerListeners;
-    private MobListener MobListener;
+
+    public boolean toggleflag = false;
 
     @Override
     public void onEnable() {
         // Plugin startup logic
         // Initialization
         instance = this;
-        protocolManager = ProtocolLibrary.getProtocolManager();
+        //protocolManager = ProtocolLibrary.getProtocolManager();
         statsStorage = new PlayerStatsStorage();
         statsManager = new PlayerStatsManager();
         statsStorage.initStorage(); // Creates Folder + player_stats.db if not exist
@@ -40,11 +39,8 @@ public final class Plugin1 extends JavaPlugin {
         playerHud.startGlobalActionBarTask(this);
 
         // Listeners
-        PlayerListeners = new PlayerListeners();
-        MobListener = new MobListener();
-
-        getServer().getPluginManager().registerEvents(PlayerListeners, this);
-        getServer().getPluginManager().registerEvents(MobListener, this);
+        getServer().getPluginManager().registerEvents(new PlayerListeners(), this);
+        getServer().getPluginManager().registerEvents(new MobListener(), this);
 
         Objects.requireNonNull(this.getCommand("p")).setExecutor(new TestStatsCommand(statsManager, statsStorage));
     }
@@ -58,7 +54,7 @@ public final class Plugin1 extends JavaPlugin {
     public static Plugin1 getInstance() {
         return instance;
     }
-    public ProtocolManager getProtocolManager() { return protocolManager; }
+    // public ProtocolManager getProtocolManager() { return protocolManager; }
     public PlayerStatsManager getStatsManager() {
         return statsManager;
     }
