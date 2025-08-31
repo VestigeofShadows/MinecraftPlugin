@@ -2,25 +2,44 @@ package space.vestiges.plugin1.listeners;
 
 import org.bukkit.event.Listener;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.entity.Player;
 
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
+import space.vestiges.plugin1.player.PlayerHud;
 import space.vestiges.plugin1.player.PlayerStats;
 import space.vestiges.plugin1.player.PlayerStatsManager;
 import space.vestiges.plugin1.player.PlayerStatsStorage;
 import space.vestiges.plugin1.Plugin1;
 import space.vestiges.plugin1.equipment.EquipmentManager;
 import io.papermc.paper.event.entity.EntityEquipmentChangedEvent;
+import space.vestiges.plugin1.utils.BaseStatsCalculation;
 
 import java.util.*;
 
 public class PlayerListeners implements Listener{
+
+
+    // &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+    // ----------------------------------------------------------------------------------
+    // -------------------- classes/variables Initialization ----------------------------
+    // ----------------------------------------------------------------------------------
+    // &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+
     private final PlayerStatsManager statsManager = Plugin1.getInstance().getStatsManager();
     private final PlayerStatsStorage statsStorage = Plugin1.getInstance().getStorageManager();
+    private final PlayerHud playerHud= Plugin1.getInstance().getPlayerHud();
     private final Set<UUID> playerJoined = new HashSet<>();
+
+
+    // &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+    // ----------------------------------------------------------------------------------
+    // ------------------------------ Class Functions  ----------------------------------
+    // ----------------------------------------------------------------------------------
+    // &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
 
     /**
      * This event adds base stats to the joining player only!
@@ -37,31 +56,52 @@ public class PlayerListeners implements Listener{
         // Put player in hashset
         playerJoined.add(player.getUniqueId());
 
-        // If player exists in storage, add to active memory, else create it and add it in active and database
+        // If player exists in storage, add to active memory
         if (statsStorage.playerExists(player)) {
-            Plugin1.getInstance().getLogger().info("Player stats exists");
+            if (Plugin1.getInstance().toggleflag) Plugin1.getInstance().getLogger().info("Player stats exists");
 
             initialLoadPlayerInfo(player);
         } else { // Creates player and put it in .db, this happens once, and then run load player
-            Plugin1.getInstance().getLogger().info("Player stats does not exist");
+            if (Plugin1.getInstance().toggleflag)Plugin1.getInstance().getLogger().info("Player stats does not exist");
 
-            // put default into database
-            PlayerStats tempStats = new PlayerStats(player);
-            statsStorage.addStoredPlayer(player, tempStats);
+            // put create and put default into database
+            statsStorage.addStoredPlayer(player, new PlayerStats(player));
 
             // put default into hashmap
-
             initialLoadPlayerInfo(player);
         }
     }
 
+    /**
+     * Remove player from active memory when they leave the server
+     * @param event PlayerQuitEvent
+     */
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event) {
         // Get player
         Player player = event.getPlayer();
         Plugin1.getInstance().getLogger().info("Removed " + player.getName() + " from active players memory and hashset");
         statsManager.removeActivePlayer(player);
+        playerJoined.remove(player.getUniqueId());
     }
+
+    /**
+     * Update player hud whenever player is damaged
+     * @param event EntityDamageEvent
+     */
+    @EventHandler
+    public void onPlayerDamaged(EntityDamageEvent event) {
+        if (!(event.getEntity() instanceof Player player)) return;
+        playerHud.updateHud(player);
+    }
+
+    //todo A way to detect mana change, and updatehud
+
+    // &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+    // ----------------------------------------------------------------------------------
+    // -------------------------     HELPER FUNCTIONS     -------------------------------
+    // ----------------------------------------------------------------------------------
+    // &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
 
     /**
      * Checks if entity is player, and then update that player's stats based on equipment.
@@ -71,13 +111,9 @@ public class PlayerListeners implements Listener{
     @EventHandler
     public void onEntityEquipmentChange(EntityEquipmentChangedEvent event) {
 
-
         // Check if entity is player, ignore all other Equipment change events
-        if (!(event.getEntity() instanceof Player)) { return; }
+        if (!(event.getEntity() instanceof Player player)) { return; }
         Plugin1.getInstance().getLogger().info("Player triggered EECE");
-
-        // Get the player
-        Player player = (Player) event.getEntity();
 
         if (playerJoined.contains(player.getUniqueId())) {
 
@@ -138,14 +174,50 @@ public class PlayerListeners implements Listener{
 
     // Loads player from database on player join
     public void initialLoadPlayerInfo(Player player) {
-        Plugin1.getInstance().getLogger().info("player join event");
-        // add stored stats to active stats (base stats)
+        if (Plugin1.getInstance().toggleflag) Plugin1.getInstance().getLogger().info("player join event, initial load player info called");
+
+        // Load from database
         statsManager.addActivePlayer(player, statsStorage.getPlayerStoredStats(player));
-        // find current player in the hashmap
+
+        // Load all stats
         PlayerStats currentPlayer = statsManager.getPlayerInfo(player);
-        // Load base stats!
-        currentPlayer.setAttackSpeed(2.0);
-        currentPlayer.setCurrentHP(1.0); // just so you don't insta die lmao
+        // uuid, name, last_saved, total_xp already loaded
+        int combatLevel = BaseStatsCalculation.getLevelFromTotalXp(currentPlayer.getCombat_xp());
+        currentPlayer.setCombatLevel(combatLevel);
+        double basehp = BaseStatsCalculation.getBaseHp(combatLevel);
+        currentPlayer.setBase_hp(basehp);
+        double basemana = BaseStatsCalculation.getBaseMana(combatLevel);
+        currentPlayer.setBase_mana(basemana);
+        double basestamina = 0;
+        currentPlayer.setBase_stamina(basestamina);
+        double basearmor = 0;
+        currentPlayer.setBase_armor(basearmor);
+        double basepower = 0;
+        currentPlayer.setBase_power(basepower);
+
+        double maxHP = basehp;
+        currentPlayer.setMaxHP(maxHP);
+        double maxMana = basemana;
+        currentPlayer.setMaxMana(maxMana);
+        double maxStamina = basestamina;
+        currentPlayer.setMaxStamina(maxStamina);
+
+        double currentHP = maxHP;
+        currentPlayer.setCurrentHP(currentHP);
+        double currentMana = maxMana;
+        currentPlayer.setCurrentMana(currentMana);
+        double currentStamina = maxStamina;
+        currentPlayer.setCurrentStamina(currentStamina);
+        double armor = basearmor;
+        currentPlayer.setBase_armor(armor);
+        double power = basepower;
+        currentPlayer.setBase_power(power);
+
+        double attackSpeed = 2.0;
+        currentPlayer.setAttackSpeed(attackSpeed);
+        long lastAttackTime = System.currentTimeMillis();
+        currentPlayer.setLastAttackTime(lastAttackTime);
+
         // Set playerJoined, so EECE can detect
         playerJoined.remove(player.getUniqueId());
     }

@@ -23,6 +23,7 @@ public final class HealthUtils {
         }
         return attr.getValue();
     }
+
     /**
      * Sets a mob's hp value
      * @param entity the entity to change the hp value for

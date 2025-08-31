@@ -2,7 +2,6 @@ package space.vestiges.plugin1.commands;
 
 import de.tr7zw.nbtapi.NBT;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.TextComponent;
 import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
@@ -61,8 +60,8 @@ public class TestStatsCommand implements CommandExecutor {
                 player.sendMessage("uuid: " + stats.getUuid());
                 player.sendMessage("name: " + stats.getName());
                 player.sendMessage("last saved: " + stats.getLast_saved());
-                player.sendMessage("level: " + stats.getLevel());
-                player.sendMessage("total xp:  " + stats.getTotal_xp());
+                player.sendMessage("level: " + stats.getCombatLevel());
+                player.sendMessage("total xp:  " + stats.getCombat_xp());
                 player.sendMessage("base hp: " + stats.getBase_hp());
                 player.sendMessage("base mana:  " + stats.getBase_mana());
                 player.sendMessage("base stamina:  " + stats.getBase_stamina());
@@ -117,6 +116,9 @@ public class TestStatsCommand implements CommandExecutor {
                     Plugin1.getInstance().getLogger().info("changing 1024 to default");
                     atkSpd.setBaseValue(4.0);
                 }
+            }
+            case "removeme" -> {
+                statsStorage.removeStoredPlayer(player);
             }
 
             default -> player.sendMessage("Unknown action. Use show, add, or remove.");

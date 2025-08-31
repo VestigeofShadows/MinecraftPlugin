@@ -29,12 +29,7 @@ public class PlayerStatsStorage {
                 uuid TEXT PRIMARY KEY,
                 playername TEXT,
                 last_saved INTEGER,
-                total_xp REAL,
-                base_hp REAL,
-                base_mana REAL,
-                base_stamina REAL,
-                base_armor REAL,
-                base_power REAL
+                total_xp REAL
             );
         """;
         try  (Statement stmt = connection.createStatement()) {
@@ -45,17 +40,12 @@ public class PlayerStatsStorage {
     }
     // ADD PLAYER TO DATABASE
     public void addStoredPlayer(@NotNull Player player, PlayerStats stats) {
-        String sql = "INSERT OR REPLACE INTO player_stats (uuid, playername, last_saved, total_xp, base_hp, base_mana, base_stamina, base_armor, base_power) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT OR REPLACE INTO player_stats (uuid, playername, last_saved, total_xp) VALUES (?, ?, ?, ?)";
         try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
             pstmt.setString(1, player.getUniqueId().toString());
             pstmt.setString(2, player.getName());
             pstmt.setInt(3, stats.getLast_saved());
-            pstmt.setDouble(4, stats.getTotal_xp());
-            pstmt.setDouble(5, stats.getBase_hp());
-            pstmt.setDouble(6, stats.getBase_mana());
-            pstmt.setDouble(7, stats.getBase_stamina());
-            pstmt.setDouble(8, stats.getBase_armor());
-            pstmt.setDouble(9, stats.getBase_power());
+            pstmt.setDouble(4, stats.getCombat_xp());
             pstmt.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -63,10 +53,16 @@ public class PlayerStatsStorage {
     }
     // REMOVE PLAYER IN THE DATABASE for testing? TODO
     public void removeStoredPlayer(@NotNull Player player) {
-        String sql = "";
+        String sql = "DELETE FROM player_stats WHERE uuid = ?";
+        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+            pstmt.setString(1, player.getUniqueId().toString());
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
     public PlayerStats getPlayerStoredStats(@NotNull Player player) {
-        String sql = "SELECT uuid, playername, last_saved, total_xp, base_hp, base_mana, base_stamina, base_armor, base_power FROM player_stats WHERE uuid = ?";
+        String sql = "SELECT uuid, playername, last_saved, total_xp FROM player_stats WHERE uuid = ?";
         try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
             pstmt.setString(1, player.getUniqueId().toString());
             ResultSet rs = pstmt.executeQuery();
@@ -74,13 +70,8 @@ public class PlayerStatsStorage {
                 return new PlayerStats(
                         rs.getString("uuid"),
                         rs.getString("playername"),
-                        rs.getInt("last_saved"),
                         rs.getDouble("total_xp"),
-                        rs.getDouble("base_hp"),
-                        rs.getDouble("base_mana"),
-                        rs.getDouble("base_stamina"),
-                        rs.getDouble("base_armor"),
-                        rs.getDouble("base_power")
+                        rs.getInt("last_saved")
                 );
             }
         } catch (SQLException e) {

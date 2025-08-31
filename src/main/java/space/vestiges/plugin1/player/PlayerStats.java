@@ -11,25 +11,25 @@ import java.util.UUID;
 
 public class PlayerStats {
 
-    // Base is used to read from json and initializing json
+    // User data in database
     private UUID uuid;
     private String name;
     private int last_saved;
+    private double combat_xp;
 
-    private int level;
-    private double total_xp;
+    // Base stats
+    private int combatLevel;
     private double base_hp;
     private double base_mana;
     private double base_stamina;
     private double base_armor;
     private double base_power;
 
-    // Max stats for display
+    // Player stats
     private transient double maxHP;
     private transient double maxMana;
     private transient double maxStamina;
 
-    // Current stats for calculations
     private transient double currentHP;
     private transient double currentMana;
     private transient double currentStamina;
@@ -53,29 +53,22 @@ public class PlayerStats {
         equipmentStatsCache.put(slot, stats);
     }
 
-    // Template constructor for storage only! when player FIRST JOINS!
+    /**
+     * Template constructor for when player FIRST JOINS! Directly put into the database after
+     * @param player the player's first join server
+     */
     public PlayerStats(@NotNull Player player) {
         this.uuid = player.getUniqueId();
         this.name = player.getName();
-        this.total_xp = 0;
-        this.base_hp = 100;
-        this.base_mana = 100;
-        this.base_stamina = 100;
-        this.base_armor = 0;
-        this.base_power = 0;
+        this.combat_xp = 0;
         this.last_saved = (int) (System.currentTimeMillis() / 1000L);
     }
 
-    // This constructor is for loading players in general (divide this into armor / mainhand later)
-    public PlayerStats(String uuid, String name, int last_saved, double total_xp, double base_hp, double base_mana, double base_stamina, double base_armor, double base_power) {
+    // This constructor is for loading players from database
+    public PlayerStats(String uuid, String name, double combat_xp, int last_saved) {
         this.uuid = UUID.fromString(uuid);
         this.name = name;
-        this.total_xp = total_xp;
-        this.base_hp = base_hp;
-        this.base_mana = base_mana;
-        this.base_stamina = base_stamina;
-        this.base_armor = base_armor;
-        this.base_power = base_power;
+        this.combat_xp = combat_xp;
         this.last_saved = last_saved;
     }
 
@@ -159,7 +152,7 @@ public class PlayerStats {
                           AtkSpd: %.2f
                         """,
                 uuid, name, last_saved,
-                level, total_xp,
+                combatLevel, combat_xp,
                 base_hp, base_mana, base_stamina, base_armor, base_power,
                 maxHP, maxMana, maxStamina,
                 currentHP, currentMana, currentStamina,
@@ -177,9 +170,9 @@ public class PlayerStats {
     public void setLast_saved(int last_saved) {
         this.last_saved = last_saved;
     }
-    public void setLevel(int level) { this.level = level;}
-    public void setTotal_xp(double total_xp) {
-        this.total_xp = total_xp;
+    public void setCombatLevel(int combatLevel) { this.combatLevel = combatLevel;}
+    public void setCombat_xp(double combat_xp) {
+        this.combat_xp = combat_xp;
     }
     public void setBase_hp(double base_hp) {
         this.base_hp = base_hp;
@@ -230,9 +223,9 @@ public class PlayerStats {
     public int getLast_saved() {
         return last_saved;
     }
-    public int getLevel() { return level; }
-    public double getTotal_xp() {
-        return total_xp;
+    public int getCombatLevel() { return combatLevel; }
+    public double getCombat_xp() {
+        return combat_xp;
     }
     public double getBase_hp() {
         return base_hp;

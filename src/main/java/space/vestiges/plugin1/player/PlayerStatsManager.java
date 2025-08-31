@@ -26,6 +26,7 @@ public class PlayerStatsManager {
     public void removeActivePlayer(Player player) {
         activePlayers.remove(player.getUniqueId());
     }
+
     /**
      * Return playerstats to change
      *

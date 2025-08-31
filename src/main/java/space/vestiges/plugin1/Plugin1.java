@@ -6,6 +6,7 @@ import space.vestiges.plugin1.commands.TestStatsCommand;
 import space.vestiges.plugin1.listeners.MobListener;
 import space.vestiges.plugin1.listeners.PlayerListeners;
 import org.bukkit.plugin.java.JavaPlugin;
+import space.vestiges.plugin1.player.PlayerHud;
 import space.vestiges.plugin1.player.PlayerStatsManager;
 import space.vestiges.plugin1.player.PlayerStatsStorage;
 
@@ -18,6 +19,9 @@ public final class Plugin1 extends JavaPlugin {
     private PlayerStatsManager statsManager;
     private PlayerStatsStorage statsStorage;
     public boolean toggleflag = false;
+    private PlayerHud playerHud;
+    private PlayerListeners PlayerListeners;
+    private MobListener MobListener;
 
     @Override
     public void onEnable() {
@@ -29,13 +33,19 @@ public final class Plugin1 extends JavaPlugin {
         statsManager = new PlayerStatsManager();
         statsStorage.initStorage(); // Creates Folder + player_stats.db if not exist
 
-        //Listeners
-        PlayerListeners listener = new PlayerListeners();
-        MobListener mobListener = new MobListener();
-        getServer().getPluginManager().registerEvents(listener, this);
-        getServer().getPluginManager().registerEvents(mobListener, this);
 
-        //Commands
+        //Tasks + Listeners
+        playerHud = new PlayerHud();
+
+        playerHud.startGlobalActionBarTask(this);
+
+        // Listeners
+        PlayerListeners = new PlayerListeners();
+        MobListener = new MobListener();
+
+        getServer().getPluginManager().registerEvents(PlayerListeners, this);
+        getServer().getPluginManager().registerEvents(MobListener, this);
+
         Objects.requireNonNull(this.getCommand("p")).setExecutor(new TestStatsCommand(statsManager, statsStorage));
     }
 
@@ -55,4 +65,5 @@ public final class Plugin1 extends JavaPlugin {
     public PlayerStatsStorage getStorageManager() {
         return statsStorage;
     }
+    public PlayerHud getPlayerHud() { return playerHud; }
 }

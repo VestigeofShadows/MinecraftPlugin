@@ -14,16 +14,14 @@ import space.vestiges.plugin1.player.PlayerStatsManager;
 import java.util.ArrayList;
 import java.util.List;
 
-/*
-        This class is entirely for returning equipment stats
-        Checks if player has equipment
-        Calculate the aggregate stats
-        Return the aggregate stats
-        Use the aggregate stats in PlayerStatsManager
-*/
-public class EquipmentManager {
 
-    private final Plugin1 plugin = Plugin1.getPlugin(Plugin1.class);
+/**
+ * This class returns equipment stats
+ * Checks if player has equipment
+ * Calculate aggregate stats to return
+ * Uses the stats in playerstatsmanager
+ */
+public class EquipmentManager {
 
     /**
      * Return aggregated stats of equipment
@@ -170,7 +168,7 @@ public class EquipmentManager {
      * @param item check if this item is valid
      * @return true if item is not null and not air
      */
-    public boolean isValidItem(ItemStack item) {
+    private boolean isValidItem(ItemStack item) {
         return item != null && item.getType() != Material.AIR;
     }
 
@@ -180,7 +178,7 @@ public class EquipmentManager {
      * @param item ItemStack
      * @return EquipmentStats
      */
-    public static EquipmentStats readStatsFromItem(ItemStack item) {
+    private static EquipmentStats readStatsFromItem(ItemStack item) {
         EquipmentStats stats;
         double hp = NBT.get(item, nbt -> (Double) nbt.getOrDefault("eqHp", 0.0));
         double mana = NBT.get(item, nbt -> (Double) nbt.getOrDefault("eqMana", 0.0));
@@ -225,34 +223,5 @@ public class EquipmentManager {
 
         // Normalize at the end
         playerStats.normalizeStats();
-
-        /*
-        boolean oldValid = oldItem != null && oldItem.getType() != Material.AIR;
-        boolean newValid = newItem != null && newItem.getType() != Material.AIR;
-
-        if (!oldValid && !newValid) {
-            return; // Nothing changed
-        }
-        if (oldValid && !newValid) {
-            // Removed
-            EquipmentStats oldStats = readStatsFromItem(oldItem);
-            playerStats.subtractEquipmentStats(oldStats);
-            playerStats.normalizeStats();
-        }
-        else if (!oldValid && newValid) {
-            // Added
-            EquipmentStats newStats = readStatsFromItem(newItem);
-            playerStats.addEquipmentStats(newStats);
-            playerStats.normalizeStats();
-        }
-        else {
-            // Swapped
-            EquipmentStats oldStats = readStatsFromItem(oldItem);
-            EquipmentStats newStats = readStatsFromItem(newItem);
-            playerStats.subtractEquipmentStats(oldStats);
-            playerStats.addEquipmentStats(newStats);
-            playerStats.normalizeStats();
-        }
-        */
     }
 }
