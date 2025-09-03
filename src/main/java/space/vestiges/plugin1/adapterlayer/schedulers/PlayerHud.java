@@ -1,13 +1,18 @@
-package space.vestiges.plugin1.player;
+package space.vestiges.plugin1.adapterlayer.schedulers;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
-import space.vestiges.plugin1.Plugin1;
-import space.vestiges.plugin1.utils.BaseStatsCalculation;
+import space.vestiges.plugin1.adapterlayer.Plugin1;
+import space.vestiges.plugin1.domainlayer.model.player.PlayerStats;
+import space.vestiges.plugin1.domainlayer.utils.BaseStatsCalculation;
+import space.vestiges.plugin1.applicationlayer.PlayerStatsManager;
 
+/**
+ * Update values for players, such as hud and regeneration.
+ */
 public class PlayerHud {
 
     // &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
@@ -28,6 +33,7 @@ public class PlayerHud {
      * Create a runnable task that loops and send hud over and over again
      * @param plugin the server plugin
      */
+    /*
     public void startGlobalActionBarTask(Plugin1 plugin) {
         new BukkitRunnable() {
             @Override
@@ -38,10 +44,10 @@ public class PlayerHud {
                 }
             }
         }.runTaskTimer(plugin, 0L, 20L);
-    }
+    } */
 
     /**
-     * This method updates hud for a player
+     * This method updates hud for a player, called in other sections to immediately update
      * @param player the player to update the hud for
      */
     public void updateHud(Player player) {

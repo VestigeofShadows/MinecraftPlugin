@@ -1,20 +1,31 @@
-package space.vestiges.plugin1.mob;
+package space.vestiges.plugin1.domainlayer.model.mob;
 
 import io.lumine.mythic.bukkit.BukkitAPIHelper;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.entity.LivingEntity;
-import space.vestiges.plugin1.Plugin1;
-import space.vestiges.plugin1.utils.HealthUtils;
+import space.vestiges.plugin1.adapterlayer.Plugin1;
 
 import java.util.HashMap;
 import java.util.UUID;
 
 public class MobHpDisplay {
 
+    // &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+    // ----------------------------------------------------------------------------------
+    // -------------------------     Class variables     --------------------------------
+    // ----------------------------------------------------------------------------------
+    // &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+
     private static final BukkitAPIHelper mythicHelper = new BukkitAPIHelper();
     private final HashMap<UUID, Component> mobsBaseName = new HashMap<>();
+
+    // &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+    // ----------------------------------------------------------------------------------
+    // --------------------------    Class functions     --------------------------------
+    // ----------------------------------------------------------------------------------
+    // &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
 
     /**
      * Updates an entity's current hp, and displays it.

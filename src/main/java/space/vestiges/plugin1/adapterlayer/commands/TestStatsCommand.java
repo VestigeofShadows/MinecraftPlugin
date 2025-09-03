@@ -1,4 +1,4 @@
-package space.vestiges.plugin1.commands;
+package space.vestiges.plugin1.adapterlayer.commands;
 
 import de.tr7zw.nbtapi.NBT;
 import net.kyori.adventure.text.Component;
@@ -11,12 +11,10 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
-import space.vestiges.plugin1.equipment.EquipmentStats;
-import space.vestiges.plugin1.player.PlayerStats;
-import space.vestiges.plugin1.player.PlayerStatsManager;
-import space.vestiges.plugin1.player.PlayerStatsStorage;
-import space.vestiges.plugin1.Plugin1;
-import space.vestiges.plugin1.equipment.EquipmentManager;
+import space.vestiges.plugin1.domainlayer.model.player.PlayerStats;
+import space.vestiges.plugin1.applicationlayer.PlayerStatsManager;
+import space.vestiges.plugin1.adapterlayer.Plugin1;
+import space.vestiges.plugin1.applicationlayer.EquipmentManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,12 +22,10 @@ import java.util.List;
 public class TestStatsCommand implements CommandExecutor {
 
     private final PlayerStatsManager statsManager;
-    private final PlayerStatsStorage statsStorage;
     private final EquipmentManager equipmentManager;
 
-    public TestStatsCommand(PlayerStatsManager statsManager, PlayerStatsStorage statsStorage) {
+    public TestStatsCommand(PlayerStatsManager statsManager) {
         this.statsManager = statsManager;
-        this.statsStorage = statsStorage;
         this.equipmentManager = new EquipmentManager();
     }
 
@@ -60,8 +56,8 @@ public class TestStatsCommand implements CommandExecutor {
                 player.sendMessage("uuid: " + stats.getUuid());
                 player.sendMessage("name: " + stats.getName());
                 player.sendMessage("last saved: " + stats.getLast_saved());
-                player.sendMessage("level: " + stats.getCombatLevel());
                 player.sendMessage("total xp:  " + stats.getCombat_xp());
+                player.sendMessage("level: " + stats.getCombatLevel());
                 player.sendMessage("base hp: " + stats.getBase_hp());
                 player.sendMessage("base mana:  " + stats.getBase_mana());
                 player.sendMessage("base stamina:  " + stats.getBase_stamina());
@@ -88,10 +84,6 @@ public class TestStatsCommand implements CommandExecutor {
                 player.getInventory().addItem(helm, chest, legs, boots, swordMain, swordOffhand);
                 player.sendMessage("You received a kit with random stats!");
             }
-            case "showarmor" -> {
-                EquipmentStats estats = equipmentManager.getCombinedStats(player);
-                Plugin1.getInstance().getLogger().info(estats.toString());
-            }
             case "showstats" -> {
                 PlayerStats pstats = statsManager.getPlayerInfo(player);
                 Plugin1.getInstance().getLogger().info(pstats.toString());
@@ -100,8 +92,9 @@ public class TestStatsCommand implements CommandExecutor {
             case "loadarmor" -> {
                 // TODO: this is a method I should put in a class see loadPlayerInfo in listeners
                 PlayerStats currentPlayer = statsManager.getPlayerInfo(player);
-                EquipmentManager equipment = new EquipmentManager();
-                currentPlayer.addBaseEquipmentStats(equipment.getCombinedStats(player));
+
+                //EquipmentManager equipment = new EquipmentManager();
+                // currentPlayer.addBaseEquipmentStats(equipment.getCombinedStats(player));
             }
             case "toggle" -> {
                 Plugin1.getInstance().toggleflag = !Plugin1.getInstance().toggleflag;
@@ -118,7 +111,8 @@ public class TestStatsCommand implements CommandExecutor {
                 }
             }
             case "removeme" -> {
-                statsStorage.removeStoredPlayer(player);
+                //todo
+                //statsStorage.removeStoredPlayer(player);
             }
 
             default -> player.sendMessage("Unknown action. Use show, add, or remove.");

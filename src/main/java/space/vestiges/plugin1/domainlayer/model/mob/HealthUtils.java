@@ -1,4 +1,4 @@
-package space.vestiges.plugin1.utils;
+package space.vestiges.plugin1.domainlayer.model.mob;
 
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
@@ -22,18 +22,5 @@ public final class HealthUtils {
             throw new IllegalStateException(entity.getName() + " has no MAX_HEALTH attribute!");
         }
         return attr.getValue();
-    }
-
-    /**
-     * Sets a mob's hp value
-     * @param entity the entity to change the hp value for
-     * @param value what value to change the mob's hp to
-     */
-    public static void setMaxHealth(LivingEntity entity, double value) {
-        AttributeInstance attr = entity.getAttribute(Attribute.MAX_HEALTH);
-        if (attr == null) {
-            throw new IllegalStateException(entity.getName() + " has no MAX_HEALTH attribute!");
-        }
-        attr.setBaseValue(value);
     }
 }

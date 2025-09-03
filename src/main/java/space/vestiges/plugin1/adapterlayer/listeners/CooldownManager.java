@@ -1,9 +1,9 @@
-package space.vestiges.plugin1.listeners;
+package space.vestiges.plugin1.adapterlayer.listeners;
 
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import space.vestiges.plugin1.Plugin1;
+import space.vestiges.plugin1.adapterlayer.Plugin1;
 
 import java.util.HashMap;
 import java.util.Map;

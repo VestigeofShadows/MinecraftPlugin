@@ -1,4 +1,4 @@
-package space.vestiges.plugin1.listeners;
+package space.vestiges.plugin1.adapterlayer.listeners;
 
 import io.lumine.mythic.bukkit.events.MythicMobSpawnEvent;
 import org.bukkit.Bukkit;
@@ -9,12 +9,10 @@ import org.bukkit.event.entity.*;
 import org.bukkit.projectiles.ProjectileSource;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import space.vestiges.plugin1.Plugin1;
-import space.vestiges.plugin1.mob.MobHpDisplay;
-import space.vestiges.plugin1.packets.FloatingTextPacket;
-import space.vestiges.plugin1.player.PlayerStats;
-import space.vestiges.plugin1.player.PlayerStatsManager;
-import space.vestiges.plugin1.utils.HealthUtils;
+import space.vestiges.plugin1.adapterlayer.Plugin1;
+import space.vestiges.plugin1.domainlayer.model.mob.MobHpDisplay;
+import space.vestiges.plugin1.adapterlayer.visual.FloatingTextPacket;
+import space.vestiges.plugin1.domainlayer.model.mob.HealthUtils;
 
 public class MobListener implements Listener {
 
@@ -29,8 +27,7 @@ public class MobListener implements Listener {
     // Initialized private variables
     private final MobHpDisplay mobHpDisplay = new MobHpDisplay();
     private final CooldownManager mobImmunityManager = new CooldownManager();
-    PlayerStatsManager statsManager = Plugin1.getInstance().getStatsManager();
-    FloatingTextPacket ftp = new FloatingTextPacket();
+    private final FloatingTextPacket ftp = new FloatingTextPacket();
 
     // &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
     // ----------------------------------------------------------------------------------
@@ -147,19 +144,7 @@ public class MobListener implements Listener {
     // ----------------------------------------------------------------------------------
     // &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
 
-    /**
-     * Used to save projectile data, or the weapon that launched the projectile
-     * Projectiles should hold the weapon base dmg info
-     * Melee weapons don't need to, just save in player stats
-     *
-     * @param event ProjectileLaunchEvent
-     */
-    @EventHandler
-    public void projectileLaunch(@NotNull ProjectileLaunchEvent event) {
 
-        Entity e = event.getEntity();
-        Plugin1.getInstance().getLogger().info("Projectile launched: " + e);
-    }
 
     /**
      * Obtains the Player entity that caused the damage (including projectiles)
@@ -177,7 +162,7 @@ public class MobListener implements Listener {
         } else if (damager instanceof Projectile) {
             ProjectileSource shooter = ((Projectile) damager).getShooter();
             // remove the projectile after getting the shooter
-            damager.remove();
+            // damager.remove();
             if (shooter instanceof Player) {
                 attacker = (Player) shooter;
             } else {

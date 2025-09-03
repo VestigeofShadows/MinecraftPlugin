@@ -1,6 +1,5 @@
-package space.vestiges.plugin1.packets;
+package space.vestiges.plugin1.adapterlayer.visual;
 
-import com.comphenix.protocol.ProtocolManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
@@ -10,7 +9,7 @@ import org.bukkit.util.Transformation;
 import org.jetbrains.annotations.NotNull;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
-import space.vestiges.plugin1.Plugin1;
+import space.vestiges.plugin1.adapterlayer.Plugin1;
 
 public final class FloatingTextPacket {
 

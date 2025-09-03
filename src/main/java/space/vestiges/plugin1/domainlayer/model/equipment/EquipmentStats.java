@@ -1,4 +1,4 @@
-package space.vestiges.plugin1.equipment;
+package space.vestiges.plugin1.domainlayer.model.equipment;
 
 public class EquipmentStats {
     private double hp;
@@ -30,7 +30,7 @@ public class EquipmentStats {
      * @param power set EquipmentStat's power to this value
      * @param attackSpeed set EquipmentStat's attackSpeed to this value
      */
-    EquipmentStats(double hp, double mana, double stamina, double armor, double power, double attackSpeed) {
+    public EquipmentStats(double hp, double mana, double stamina, double armor, double power, double attackSpeed) {
         this.hp = hp;
         this.mana = mana;
         this.stamina = stamina;

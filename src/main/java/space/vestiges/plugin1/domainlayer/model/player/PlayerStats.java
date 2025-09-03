@@ -1,9 +1,9 @@
-package space.vestiges.plugin1.player;
+package space.vestiges.plugin1.domainlayer.model.player;
 
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.EquipmentSlot;
 import org.jetbrains.annotations.NotNull;
-import space.vestiges.plugin1.equipment.EquipmentStats;
+import space.vestiges.plugin1.domainlayer.model.equipment.EquipmentStats;
 
 import java.util.EnumMap;
 import java.util.Map;
@@ -11,58 +11,80 @@ import java.util.UUID;
 
 public class PlayerStats {
 
-    // User data in database
+    // &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+    // ----------------------------------------------------------------------------------
+    // ----------------------------   CLASS VARIABLES    --------------------------------
+    // ----------------------------------------------------------------------------------
+    // &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+
+    // Persistent Data
     private UUID uuid;
     private String name;
     private int last_saved;
     private double combat_xp;
 
-    // Base stats
+    // Derived Data
     private int combatLevel;
     private double base_hp;
     private double base_mana;
     private double base_stamina;
     private double base_armor;
     private double base_power;
+    private double base_hp_regen;
+    private double base_mana_regen;
 
-    // Player stats
-    private transient double maxHP;
-    private transient double maxMana;
-    private transient double maxStamina;
+    // Final Derived Stats
+    private double maxHP;
+    private double maxMana;
+    private double maxStamina;
+    private double armor;
+    private double power;
+    private double hpregen;
+    private double manaregen;
+    private double attackSpeed;
 
+    // Runtime / Ephemeral State
     private transient double currentHP;
     private transient double currentMana;
     private transient double currentStamina;
-    private transient double armor;
-    private transient double power;
+    private transient long lastAttackTime;
 
-    // For attack cooldown
-    private transient double attackSpeed;  //determines how fast the player can attack (attacks per second)
-    private transient long lastAttackTime; //The tick or millisecond timestamp of last successful attack
-
-    // For cached stats
+    // For cached stats, there are 6 EquipmentSlots (helm, chest, legs, boots, hand, offhand) already initialized
     private final Map<EquipmentSlot, EquipmentStats> equipmentStatsCache = new EnumMap<>(EquipmentSlot.class);
 
-    // Accessor to get cached stats for a slot
+    /**
+     * Accessor to get a cached stats for a EquipmentSlot
+     * @param slot the slot to get stats from the cache for
+     * @return EquipmentStats (in the cache)
+     */
     public EquipmentStats getCachedStats(EquipmentSlot slot) {
         // Default is all 0
         return equipmentStatsCache.getOrDefault(slot, new EquipmentStats());
     }
 
+    /**
+     * Set a player's equipment slot value in the cache.
+     * @param slot the EquipmentSlot enum
+     * @param stats the stats the slot will hold
+     */
     public void setCachedStats(EquipmentSlot slot, EquipmentStats stats) {
         equipmentStatsCache.put(slot, stats);
     }
 
     /**
-     * Template constructor for when player FIRST JOINS! Directly put into the database after
-     * @param player the player's first join server
+     * Clear a player's equipment slot value in the cache
+     * @param slot the equipment slot to clear
      */
-    public PlayerStats(@NotNull Player player) {
-        this.uuid = player.getUniqueId();
-        this.name = player.getName();
-        this.combat_xp = 0;
-        this.last_saved = (int) (System.currentTimeMillis() / 1000L);
+    public void clearCachedStats(EquipmentSlot slot) {
+        equipmentStatsCache.remove(slot);
     }
+
+    // &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+    // ----------------------------------------------------------------------------------
+    // ---------------------------     CONSTRUCTORS     ---------------------------------
+    // ----------------------------------------------------------------------------------
+    // &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+
 
     // This constructor is for loading players from database
     public PlayerStats(String uuid, String name, double combat_xp, int last_saved) {
@@ -72,15 +94,40 @@ public class PlayerStats {
         this.last_saved = last_saved;
     }
 
-    // Change
-    public void addBaseEquipmentStats(@NotNull EquipmentStats stats) {
-        this.maxHP = base_hp + stats.getHp();
-        this.maxMana = base_mana + stats.getMana();
-        this.maxStamina = base_stamina + stats.getStamina();
-        this.armor = base_armor + stats.getArmor();
-        this.power = base_power + stats.getPower();
-        this.attackSpeed = attackSpeed + stats.getAttackSpeed();
+    public PlayerStats(UUID uuid, String name, int last_saved, double combat_xp, int combatLevel, double base_hp, double base_mana, double base_stamina, double base_armor, double base_power, double base_hp_regen, double base_mana_regen, double maxHP, double maxMana, double maxStamina, double armor, double power, double hpregen, double manaregen, double attackSpeed, double currentHP, double currentMana, double currentStamina, long lastAttackTime) {
+        this.uuid = uuid;
+        this.name = name;
+        this.last_saved = last_saved;
+        this.combat_xp = combat_xp;
+
+        this.combatLevel = combatLevel;
+        this.base_hp = base_hp;
+        this.base_mana = base_mana;
+        this.base_stamina = base_stamina;
+        this.base_armor = base_armor;
+        this.base_power = base_power;
+        this.base_hp_regen = base_hp_regen;
+        this.base_mana_regen = base_mana_regen;
+
+        this.maxHP = maxHP;
+        this.maxMana = maxMana;
+        this.maxStamina = maxStamina;
+        this.armor = armor;
+        this.power = power;
+        this.hpregen = hpregen;
+        this.manaregen = manaregen;
+        this.attackSpeed = attackSpeed;
+
+        this.currentHP = currentHP;
+        this.currentMana = currentMana;
+        this.currentStamina = currentStamina;
+        this.lastAttackTime = lastAttackTime;
     }
+    // &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+    // ----------------------------------------------------------------------------------
+    // ------------------------------ Class Functions  ----------------------------------
+    // ----------------------------------------------------------------------------------
+    // &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
 
     public void subtractEquipmentStats(@NotNull EquipmentStats stats) {
         this.maxHP = maxHP - stats.getHp();
@@ -170,10 +217,10 @@ public class PlayerStats {
     public void setLast_saved(int last_saved) {
         this.last_saved = last_saved;
     }
-    public void setCombatLevel(int combatLevel) { this.combatLevel = combatLevel;}
     public void setCombat_xp(double combat_xp) {
         this.combat_xp = combat_xp;
     }
+    public void setCombatLevel(int combatLevel) { this.combatLevel = combatLevel;}
     public void setBase_hp(double base_hp) {
         this.base_hp = base_hp;
     }
@@ -189,6 +236,8 @@ public class PlayerStats {
     public void setBase_power(double base_power) {
         this.base_power = base_power;
     }
+    public void setBase_hp_regen(double base_hp_regen) { this.base_hp_regen = base_hp_regen; }
+    public void setBase_mana_regen(double base_mana_regen) { this.base_mana_regen = base_mana_regen; }
     public void setMaxHP(double maxHP) {
         this.maxHP = maxHP;
     }
@@ -207,6 +256,8 @@ public class PlayerStats {
     public void setCurrentStamina(double currentStamina) {
         this.currentStamina = currentStamina;
     }
+    public void setHpregen(double hpregen) { this.hpregen = hpregen; }
+    public void setManaregen(double manaregen) { this.manaregen = manaregen; }
     public void setArmor(double armor) {
         this.armor = armor;
     }
@@ -217,6 +268,9 @@ public class PlayerStats {
     public void setLastAttackTime(long lastAttackTime) { this.lastAttackTime = lastAttackTime; }
 
     // Getters
+    public UUID getUuid() {
+        return uuid;
+    }
     public String getName() {
         return name;
     }
@@ -242,6 +296,8 @@ public class PlayerStats {
     public double getBase_power() {
         return base_power;
     }
+    public double getBase_hp_regen() { return base_hp_regen; }
+    public double getBase_mana_regen() { return base_mana_regen; }
     public double getMaxHP() {
         return maxHP;
     }
@@ -251,23 +307,18 @@ public class PlayerStats {
     public double getMaxStamina() {
         return maxStamina;
     }
-    public double getCurrentMana() {
-        return currentMana;
-    }
+    public double getCurrentHP() { return currentHP; }
+    public double getCurrentMana() { return currentMana; }
     public double getCurrentStamina() {
         return currentStamina;
     }
+    public double getHpregen() { return hpregen; }
+    public double getManaregen() { return manaregen; }
     public double getArmor() {
         return armor;
     }
     public double getPower() {
         return power;
-    }
-    public double getCurrentHP() {
-        return currentHP;
-    }
-    public UUID getUuid() {
-        return uuid;
     }
     public double getAttackSpeed() { return attackSpeed; }
     public long getLastAttackTime() { return lastAttackTime; }
