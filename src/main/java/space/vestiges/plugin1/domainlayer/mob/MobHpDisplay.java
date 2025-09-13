@@ -1,4 +1,4 @@
-package space.vestiges.plugin1.domainlayer.model.mob;
+package space.vestiges.plugin1.domainlayer.mob;
 
 import io.lumine.mythic.bukkit.BukkitAPIHelper;
 import net.kyori.adventure.text.Component;

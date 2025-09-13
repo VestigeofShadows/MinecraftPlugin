@@ -10,9 +10,9 @@ import org.bukkit.projectiles.ProjectileSource;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import space.vestiges.plugin1.adapterlayer.Plugin1;
-import space.vestiges.plugin1.domainlayer.model.mob.MobHpDisplay;
-import space.vestiges.plugin1.adapterlayer.visual.FloatingTextPacket;
-import space.vestiges.plugin1.domainlayer.model.mob.HealthUtils;
+import space.vestiges.plugin1.domainlayer.mob.MobHpDisplay;
+import space.vestiges.plugin1.adapterlayer.visualUtils.FloatingTextPacket;
+import space.vestiges.plugin1.domainlayer.mob.HealthUtils;
 
 public class MobListener implements Listener {
 

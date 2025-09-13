@@ -11,10 +11,9 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
-import space.vestiges.plugin1.domainlayer.model.player.PlayerStats;
-import space.vestiges.plugin1.applicationlayer.PlayerStatsManager;
+import space.vestiges.plugin1.domainlayer.player.PlayerStats;
+import space.vestiges.plugin1.domainlayer.player.PlayerStatsManager;
 import space.vestiges.plugin1.adapterlayer.Plugin1;
-import space.vestiges.plugin1.applicationlayer.EquipmentManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,11 +21,11 @@ import java.util.List;
 public class TestStatsCommand implements CommandExecutor {
 
     private final PlayerStatsManager statsManager;
-    private final EquipmentManager equipmentManager;
+    //private final EquipmentManager equipmentManager;
 
     public TestStatsCommand(PlayerStatsManager statsManager) {
         this.statsManager = statsManager;
-        this.equipmentManager = new EquipmentManager();
+        //this.equipmentManager = new EquipmentManager();
     }
 
     /**
@@ -52,8 +51,8 @@ public class TestStatsCommand implements CommandExecutor {
 
         switch (args[0].toLowerCase()) {
             case "show" -> {
-                PlayerStats stats = statsManager.getPlayerInfo(player);
-                player.sendMessage("uuid: " + stats.getUuid());
+                PlayerStats stats = statsManager.getPlayerStats(player);
+                player.sendMessage("uuid: " + stats.getPlayerId());
                 player.sendMessage("name: " + stats.getName());
                 player.sendMessage("last saved: " + stats.getLast_saved());
                 player.sendMessage("total xp:  " + stats.getCombat_xp());
@@ -85,13 +84,13 @@ public class TestStatsCommand implements CommandExecutor {
                 player.sendMessage("You received a kit with random stats!");
             }
             case "showstats" -> {
-                PlayerStats pstats = statsManager.getPlayerInfo(player);
+                PlayerStats pstats = statsManager.getPlayerStats(player);
                 Plugin1.getInstance().getLogger().info(pstats.toString());
                 player.sendMessage(pstats.toString());
             }
             case "loadarmor" -> {
                 // TODO: this is a method I should put in a class see loadPlayerInfo in listeners
-                PlayerStats currentPlayer = statsManager.getPlayerInfo(player);
+                PlayerStats currentPlayer = statsManager.getPlayerStats(player);
 
                 //EquipmentManager equipment = new EquipmentManager();
                 // currentPlayer.addBaseEquipmentStats(equipment.getCombinedStats(player));

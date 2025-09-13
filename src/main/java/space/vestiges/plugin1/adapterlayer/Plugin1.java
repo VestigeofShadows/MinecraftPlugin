@@ -4,8 +4,8 @@ import space.vestiges.plugin1.adapterlayer.commands.TestStatsCommand;
 import space.vestiges.plugin1.adapterlayer.listeners.MobListener;
 import space.vestiges.plugin1.adapterlayer.listeners.PlayerListener;
 import org.bukkit.plugin.java.JavaPlugin;
-import space.vestiges.plugin1.adapterlayer.schedulers.PlayerHud;
-import space.vestiges.plugin1.applicationlayer.PlayerStatsManager;
+import space.vestiges.plugin1.adapterlayer.schedulers.GlobalTasks;
+import space.vestiges.plugin1.domainlayer.player.PlayerStatsManager;
 
 import java.util.Objects;
 
@@ -13,7 +13,7 @@ public final class Plugin1 extends JavaPlugin {
 
     private static Plugin1 instance;
     private PlayerStatsManager statsManager;
-    private PlayerHud playerHud;
+    private GlobalTasks globalTasks;
     public boolean toggleflag = false;
 
     @Override
@@ -24,8 +24,8 @@ public final class Plugin1 extends JavaPlugin {
         statsManager = new PlayerStatsManager();
 
 
-        //playerHud = new PlayerHud();
-        //playerHud.startGlobalActionBarTask(this);
+        globalTasks = new GlobalTasks();
+        globalTasks.startGlobalActionBarTask(this);
 
         // Listeners
         getServer().getPluginManager().registerEvents(new PlayerListener(), this);
@@ -47,5 +47,5 @@ public final class Plugin1 extends JavaPlugin {
     public PlayerStatsManager getStatsManager() {
         return statsManager;
     }
-    public PlayerHud getPlayerHud() { return playerHud; }
+    public GlobalTasks getPlayerHud() { return globalTasks; }
 }

@@ -1,4 +1,4 @@
-package space.vestiges.plugin1.applicationlayer;
+package space.vestiges.plugin1.domainlayer.equipment;
 
 import de.tr7zw.nbtapi.NBT;
 
@@ -7,8 +7,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import space.vestiges.plugin1.adapterlayer.Plugin1;
-import space.vestiges.plugin1.domainlayer.model.equipment.EquipmentStats;
-import space.vestiges.plugin1.domainlayer.model.player.PlayerStats;
+import space.vestiges.plugin1.domainlayer.player.PlayerStats;
+import space.vestiges.plugin1.domainlayer.player.PlayerStatsManager;
 
 /**
  * This class returns equipment stats
@@ -27,7 +27,7 @@ public class EquipmentManager {
     public void handleItemChange(Player player, EquipmentSlot slot, ItemStack newItem) {
 
         PlayerStatsManager statsManager = Plugin1.getInstance().getStatsManager();
-        PlayerStats playerStats = statsManager.getPlayerInfo(player);
+        PlayerStats playerStats = statsManager.getPlayerStats(player);
         EquipmentStats oldCachedStats = playerStats.getCachedStats(slot); //0s if old item is not valid
         EquipmentStats newStats;
 

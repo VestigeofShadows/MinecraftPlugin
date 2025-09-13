@@ -1,4 +1,4 @@
-package space.vestiges.plugin1.domainlayer.model.equipment;
+package space.vestiges.plugin1.domainlayer.equipment;
 
 public class EquipmentStats {
     private double hp;

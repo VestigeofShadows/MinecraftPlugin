@@ -1,4 +1,4 @@
-package space.vestiges.plugin1.domainlayer.model.mob;
+package space.vestiges.plugin1.domainlayer.mob;
 
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;

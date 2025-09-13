@@ -1,4 +1,4 @@
-package space.vestiges.plugin1.adapterlayer.visual;
+package space.vestiges.plugin1.adapterlayer.visualUtils;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;

@@ -1,4 +1,4 @@
-package space.vestiges.plugin1.applicationlayer.persistentdata;
+package space.vestiges.plugin1.domainlayer.player.playerPersistence;
 
 import java.util.UUID;
 
