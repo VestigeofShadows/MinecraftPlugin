@@ -1,6 +1,7 @@
 plugins {
     id 'java'
     id("xyz.jpenilla.run-paper") version "2.3.1"
+    id 'com.gradleup.shadow' version '8.3.0'
 }
 
 group = 'space.vestiges'
@@ -25,10 +26,6 @@ repositories {
         name = "CodeMC"
         url = uri("https://repo.codemc.io/repository/maven-public/")
     }
-    maven {
-        name = "ProtocolLib"
-        url "https://repo.dmulloy2.net/repository/public/"
-    }
     flatDir {
         dirs 'libs'
     }
@@ -37,10 +34,10 @@ repositories {
 
 dependencies {
     compileOnly("io.papermc.paper:paper-api:1.21.5-R0.1-SNAPSHOT")
-    compileOnly "net.dmulloy2:ProtocolLib:5.4.0"
     compileOnly(files("libs/MythicMobs-${mythicVersion}.jar"))
     implementation("de.tr7zw:item-nbt-api-plugin:2.15.2")
     implementation 'org.xerial:sqlite-jdbc:3.45.1.0'
+    implementation 'fr.mrmicky:fastboard:2.1.5'
 }
 
 tasks {
@@ -70,8 +67,12 @@ tasks.withType(JavaCompile).configureEach {
     }
 }
 
-jar {
-    //sorcery (where to put the jar after it's built) TODO change this later
+shadowJar {
+    relocate 'fr.mrmicky.fastboard', 'space.vestiges.fastboard'
+    // exclude NBT-API entirely
+    dependencies {
+        exclude(dependency('de.tr7zw:item-nbt-api-plugin:2.15.2'))
+    }
     destinationDirectory = file("A:/minecraft_plugin_devserver/plugins")
     archiveFileName = 'Plugin1.jar'
 }

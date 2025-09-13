@@ -5,6 +5,7 @@ import space.vestiges.plugin1.adapterlayer.listeners.MobListener;
 import space.vestiges.plugin1.adapterlayer.listeners.PlayerListener;
 import org.bukkit.plugin.java.JavaPlugin;
 import space.vestiges.plugin1.adapterlayer.schedulers.GlobalTasks;
+import space.vestiges.plugin1.adapterlayer.visualUtils.PlayerScoreBoard;
 import space.vestiges.plugin1.domainlayer.player.PlayerStatsManager;
 
 import java.util.Objects;
@@ -13,6 +14,7 @@ public final class Plugin1 extends JavaPlugin {
 
     private static Plugin1 instance;
     private PlayerStatsManager statsManager;
+    private PlayerScoreBoard boardsManager;
     private GlobalTasks globalTasks;
     public boolean toggleflag = false;
 
@@ -22,6 +24,7 @@ public final class Plugin1 extends JavaPlugin {
         // Initialization
         instance = this;
         statsManager = new PlayerStatsManager();
+        boardsManager = new PlayerScoreBoard(statsManager);
 
 
         globalTasks = new GlobalTasks();
@@ -43,9 +46,9 @@ public final class Plugin1 extends JavaPlugin {
     public static Plugin1 getInstance() {
         return instance;
     }
-    // public ProtocolManager getProtocolManager() { return protocolManager; }
     public PlayerStatsManager getStatsManager() {
         return statsManager;
     }
+    public PlayerScoreBoard getBoardsManager() { return boardsManager; }
     public GlobalTasks getPlayerHud() { return globalTasks; }
 }

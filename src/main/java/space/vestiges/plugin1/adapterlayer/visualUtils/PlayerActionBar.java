@@ -10,8 +10,7 @@ import space.vestiges.plugin1.domainlayer.utils.BaseStatsCalculation;
 /**
  * Deals with player actionbars
  */
-public class PlayerHud {
-
+public class PlayerActionBar {
 
     /**
      * This method updates hud for a player, called in other sections to immediately update
@@ -22,7 +21,6 @@ public class PlayerHud {
         Component hud = createHud(player, stats);
         player.sendActionBar(hud);
     }
-
 
     /**
      * Create a Hud based on a certain player's information and also sends the information.

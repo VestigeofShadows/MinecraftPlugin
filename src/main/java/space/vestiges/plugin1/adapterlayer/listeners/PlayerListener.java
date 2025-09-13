@@ -9,7 +9,9 @@ import org.bukkit.entity.Player;
 
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
-import space.vestiges.plugin1.adapterlayer.schedulers.GlobalTasks;
+import space.vestiges.plugin1.adapterlayer.visualUtils.PlayerActionBar;
+import space.vestiges.plugin1.adapterlayer.visualUtils.PlayerScoreBoard;
+import space.vestiges.plugin1.domainlayer.equipment.EquipmentManager2;
 import space.vestiges.plugin1.domainlayer.player.PlayerStatsManager;
 import space.vestiges.plugin1.adapterlayer.Plugin1;
 import space.vestiges.plugin1.domainlayer.equipment.EquipmentManager;
@@ -27,8 +29,7 @@ public class PlayerListener implements Listener{
     // &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
 
     private final PlayerStatsManager statsManager = Plugin1.getInstance().getStatsManager();
-    private final GlobalTasks globalTasks = Plugin1.getInstance().getPlayerHud();
-
+    private final PlayerScoreBoard boardsManager = Plugin1.getInstance().getBoardsManager();
 
     // &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
     // ----------------------------------------------------------------------------------
@@ -43,6 +44,8 @@ public class PlayerListener implements Listener{
 
         // If player exists in storage, add to active memory
         statsManager.addActivePlayer(player);
+        boardsManager.addPlayerScoreBoard(player);
+
     }
 
     @EventHandler
@@ -52,20 +55,16 @@ public class PlayerListener implements Listener{
 
         // Remove player from memory when they leave
         statsManager.removeActivePlayer(player);
+        boardsManager.removePlayerScoreBoard(player);
 
     }
 
     @EventHandler
     public void onPlayerDamaged(EntityDamageEvent event) {
         if (!(event.getEntity() instanceof Player player)) return;
-        globalTasks.updateHud(player);
+        PlayerActionBar.updateHud(player, statsManager);
     }
 
-    /**
-     * Checks if entity is player, and then update that player's stats based on equipment.
-     *
-     * @param event this method is called whenever an entity changes their equipment
-     */
     @EventHandler
     public void onEntityEquipmentChange(EntityEquipmentChangedEvent event) {
 
@@ -76,6 +75,7 @@ public class PlayerListener implements Listener{
 
         // make the manager
         EquipmentManager equipmentManager = new EquipmentManager();
+        EquipmentManager2 equipmentManager2 = new EquipmentManager2();
 
         // Check each slot, and update stats
         for (Map.Entry<EquipmentSlot, EntityEquipmentChangedEvent.EquipmentChange> entry : event.getEquipmentChanges().entrySet()) {
@@ -114,11 +114,5 @@ public class PlayerListener implements Listener{
             }
         }
     }
-
-    // &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
-    // ----------------------------------------------------------------------------------
-    // -------------------------     HELPER FUNCTIONS     -------------------------------
-    // ----------------------------------------------------------------------------------
-    // &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
 
 }

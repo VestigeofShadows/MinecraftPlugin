@@ -3,6 +3,7 @@ package space.vestiges.plugin1.domainlayer.player;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import space.vestiges.plugin1.adapterlayer.Plugin1;
+import space.vestiges.plugin1.domainlayer.equipment.EquipmentManager2;
 import space.vestiges.plugin1.domainlayer.player.playerPersistence.PersistenceManager;
 import space.vestiges.plugin1.domainlayer.player.playerPersistence.PlayerStatsData;
 import space.vestiges.plugin1.domainlayer.utils.BaseStatsCalculation;
@@ -13,10 +14,12 @@ import java.util.UUID;
 public class PlayerStatsManager {
 
     private final PersistenceManager pm;
+    private final EquipmentManager2 em2;
     private final HashMap<UUID, PlayerData> activePlayers;
 
     public PlayerStatsManager() {
         pm = new PersistenceManager();
+        em2 = new EquipmentManager2();
         activePlayers = new HashMap<>();
     }
 

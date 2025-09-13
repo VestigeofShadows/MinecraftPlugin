@@ -16,47 +16,13 @@ public class PlayerData {
     // &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
     protected UUID playerId;
     protected PlayerStats playerStats;
-    //TODO, make immunity table class
-    //private ImmunityTable immunityTable;
-    //private ActionBar
-    //private Scoreboard
-    //private BuffBar
-    // For cached stats, there are 6 EquipmentSlots (helm, chest, legs, boots, hand, offhand) already initialized
-    private final Map<EquipmentSlot, EquipmentStats> equipmentStatsCache = new EnumMap<>(EquipmentSlot.class);
-
-
-    // &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
-    // ----------------------------------------------------------------------------------
-    // ----------------------------    CLASS METHODS     --------------------------------
-    // ----------------------------------------------------------------------------------
-    // &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
-
-    /**
-     * Accessor to get a cached stats for a EquipmentSlot
-     * @param slot the slot to get stats from the cache for
-     * @return EquipmentStats (in the cache)
-     */
-    public EquipmentStats getCachedStats(EquipmentSlot slot) {
-        // Default is all 0
-        return equipmentStatsCache.getOrDefault(slot, new EquipmentStats());
-    }
-
-    /**
-     * Set a player's equipment slot value in the cache.
-     * @param slot the EquipmentSlot enum
-     * @param stats the stats the slot will hold
-     */
-    public void setCachedStats(EquipmentSlot slot, EquipmentStats stats) {
-        equipmentStatsCache.put(slot, stats);
-    }
-
-    /**
-     * Clear a player's equipment slot value in the cache
-     * @param slot the equipment slot to clear
-     */
-    public void clearCachedStats(EquipmentSlot slot) {
-        equipmentStatsCache.remove(slot);
-    }
+    protected EquipmentStats equipmentStats;
+    protected double HP;
+    protected double Mana;
+    protected double Armor;
+    protected double Power;
+    protected double HPregen;
+    protected double Manaregen;
 
     // &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
     // ----------------------------------------------------------------------------------
@@ -77,4 +43,27 @@ public class PlayerData {
     public PlayerStats getPlayerStats() {
         return playerStats;
     }
+
+
+
+    public double getHP() {
+        // HP = (base_hp + armor_hp_modifiers + buff_hp_addmodifiers) * 1 * buff_hp_multmodifiers
+        return playerStats.getBase_hp();
+    }
+    public double getMana() {
+        return Mana;
+    }
+    public double getArmor() {
+        return Armor;
+    }
+    public double getPower() {
+        return Power;
+    }
+    public double getHPregen() {
+        return HPregen;
+    }
+    public double getManaregen() {
+        return Manaregen;
+    }
+
 }

@@ -81,52 +81,52 @@ public class EquipmentManager {
                 if (type.name().endsWith("_HELMET") ||
                     type == Material.CARVED_PUMPKIN ||
                     type == Material.PLAYER_HEAD) {
-                    System.out.println("valid helmet");
+                    Plugin1.getInstance().getLogger().info("valid helmet");
                     return true;
                 } else {
-                    System.out.println("invalid helmet");
+                    Plugin1.getInstance().getLogger().info("invalid helmet");
                     return false;
                 }
             case CHEST:
                 if (type.name().endsWith("_CHESTPLATE") ||
                     type == Material.ELYTRA) {
-                    System.out.println("valid chestplate");
+                    Plugin1.getInstance().getLogger().info("valid chestplate");
                     return true;
                 } else {
-                    System.out.println("invalid chestplate");
+                    Plugin1.getInstance().getLogger().info("invalid chestplate");
                     return false;
                 }
             case LEGS:
                 if (type.name().endsWith("_LEGGINGS")) {
-                    System.out.println("valid leggings");
+                    Plugin1.getInstance().getLogger().info("valid leggings");
                     return true;
                 } else {
-                    System.out.println("invalid leggings");
+                    Plugin1.getInstance().getLogger().info("invalid leggings");
                     return false;
                 }
             case FEET:
                 if (type.name().endsWith("_BOOTS")) {
-                    System.out.println("valid boots");
+                    Plugin1.getInstance().getLogger().info("valid boots");
                     return true;
                 } else {
-                    System.out.println("invalid boots");
+                    Plugin1.getInstance().getLogger().info("invalid boots");
                     return false;
                 }
             case HAND:
                 // allow only valid weapon/tools that might have nbt data
                 if (isWeaponOrTool(type)) {
-                    System.out.println("valid weapon/tool");
+                    Plugin1.getInstance().getLogger().info("valid weapon/tool");
                     return true;
                 } else {
-                    System.out.println("invalid weapon/tool");
+                    Plugin1.getInstance().getLogger().info("invalid weapon/tool");
                     return false;
                 }
             case OFF_HAND:
                 if (isWeaponOrTool(type)) {
-                    System.out.println("valid weapon/tool");
+                    Plugin1.getInstance().getLogger().info("valid offhand weapon/tool");
                     return true;
                 } else {
-                    System.out.println("invalid weapon/tool");
+                    Plugin1.getInstance().getLogger().info("invalid offhand weapon/tool");
                     return false;
                 }
             default:
