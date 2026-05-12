@@ -1,0 +1,204 @@
+package space.vestiges.plugin1.domainlayer.equipment;
+
+import de.tr7zw.nbtapi.NBT;
+
+import org.bukkit.Material;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.EquipmentSlot;
+import org.bukkit.inventory.ItemStack;
+import space.vestiges.plugin1.adapterlayer.Plugin1;
+import space.vestiges.plugin1.domainlayer.player.PlayerData;
+import space.vestiges.plugin1.domainlayer.player.PlayerDataManager;
+
+/**
+ * This class returns equipment stats
+ * Checks if player has equipment
+ * Calculate aggregate stats to return
+ * Uses the stats in playerstatsmanager
+ */
+public class EquipmentReader {
+
+    /**
+     * Updates a player's stats based on a singular equipment change
+     *
+     * @param player the player's stats to change
+     * @param newItem the new item ItemStack
+     */
+    public static void handleItemChange(Player player, EquipmentSlot slot, ItemStack newItem, ItemStack oldItem) {
+
+        PlayerDataManager statsManager = Plugin1.getInstance().getStatsManager();
+        PlayerData playerData = statsManager.getPlayerData(player);
+        EquipmentStats equipmentStats = playerData.getEquipmentStats();
+
+        ItemStatsDTO dto;
+        ItemStatsDTO dtoOld;
+
+        // Equipping new armor  | Matches slot
+        // Removing armor       | else
+        // Replacing armor      | Matches slot
+
+
+        // read new stats only if it matches
+        if (matchesSlot(newItem, slot)) {
+            // valid item --> valid item
+            if (matchesSlot(oldItem, slot)) {
+                // Add new stats to equipmentStats, remove old stats
+                // Plugin1.getInstance().getLogger().info("valid --> valid");
+                dto = readStatsFromItem(newItem);
+                dtoOld = readStatsFromItem(oldItem);
+
+                equipmentStats.add(dto);
+                equipmentStats.sub(dtoOld);
+            // invalid item --> valid item
+            } else {
+                // Add new stats
+                // Plugin1.getInstance().getLogger().info("invalid --> valid");
+                dto = readStatsFromItem(newItem);
+                equipmentStats.add(dto);
+            }
+
+        } else {
+            // valid --> invalid
+            if (matchesSlot(oldItem, slot)) {
+                // Plugin1.getInstance().getLogger().info("valid --> invalid");
+                dtoOld = readStatsFromItem(oldItem);
+                equipmentStats.sub(dtoOld);
+            }
+            // invalid --> invalid, do nothing
+        }
+    }
+
+    // &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+    // ----------------------------------------------------------------------------------
+    // -------------------------     HELPER FUNCTIONS     -------------------------------
+    // ----------------------------------------------------------------------------------
+    // &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+
+    /**
+     * (Helper Function) Used to check if an item is valid or not.
+     *
+     * @param item check if this item is valid
+     * @return true if item is not null and not air
+     */
+    private static boolean isValidItem(ItemStack item) {
+        return item != null && item.getType() != Material.AIR;
+    }
+
+    /**
+     * This function checks if item type matches the slot type (helmet needs to be in the helmet slot)
+     * also returns false if item isn't valid
+     * todo add new types of valid items
+     * @param item the item to check
+     * @param slot the slot to check
+     * @return true if they match, false if they don't match
+     */
+    private static boolean matchesSlot(ItemStack item, EquipmentSlot slot) {
+        if (!isValidItem(item)) return false;
+
+        Material type = item.getType();
+        switch (slot) {
+            case HEAD:
+                if (type.name().endsWith("_HELMET") ||
+                    type == Material.CARVED_PUMPKIN ||
+                    type == Material.PLAYER_HEAD) {
+                    Plugin1.getInstance().getLogger().info("valid helmet");
+                    return true;
+                } else {
+                    Plugin1.getInstance().getLogger().info("invalid helmet");
+                    return false;
+                }
+            case CHEST:
+                if (type.name().endsWith("_CHESTPLATE") ||
+                    type == Material.ELYTRA) {
+                    Plugin1.getInstance().getLogger().info("valid chestplate");
+                    return true;
+                } else {
+                    Plugin1.getInstance().getLogger().info("invalid chestplate");
+                    return false;
+                }
+            case LEGS:
+                if (type.name().endsWith("_LEGGINGS")) {
+                    Plugin1.getInstance().getLogger().info("valid leggings");
+                    return true;
+                } else {
+                    Plugin1.getInstance().getLogger().info("invalid leggings");
+                    return false;
+                }
+            case FEET:
+                if (type.name().endsWith("_BOOTS")) {
+                    Plugin1.getInstance().getLogger().info("valid boots");
+                    return true;
+                } else {
+                    Plugin1.getInstance().getLogger().info("invalid boots");
+                    return false;
+                }
+            case HAND:
+                // allow only valid weapon/tools that might have nbt data
+                if (isWeaponOrTool(type)) {
+                    Plugin1.getInstance().getLogger().info("valid weapon/tool");
+                    return true;
+                } else {
+                    Plugin1.getInstance().getLogger().info("invalid weapon/tool");
+                    return false;
+                }
+            case OFF_HAND:
+                if (isWeaponOrTool(type)) {
+                    Plugin1.getInstance().getLogger().info("valid offhand weapon/tool");
+                    return true;
+                } else {
+                    Plugin1.getInstance().getLogger().info("invalid offhand weapon/tool");
+                    return false;
+                }
+            default:
+                return false;
+        }
+    }
+
+    /**
+     * Detect if a held item is a weapon or tool
+     * Helper function for matchesSlot
+     * todo: CHANGE THIS TO ADD NEW VALID TYPES
+     * @param type the type of item to check
+     * @return boolean
+     */
+    private static boolean isWeaponOrTool(Material type) {
+        String name = type.name();
+        return name.endsWith("_SWORD") ||
+                name.endsWith("_AXE") ||
+                name.endsWith("_PICKAXE") ||
+                name.endsWith("_SHOVEL") ||
+                name.endsWith("_HOE") ||
+                type == Material.TRIDENT ||
+                type == Material.BOW ||
+                type == Material.CROSSBOW ||
+                type == Material.SHIELD;
+    }
+
+    /**
+     * (Helper Function) Used to read stats from a single equipment's nbt values
+     * reading stats from nbt, and returning EquipmentStats
+     * @param item ItemStack
+     * @return EquipmentStats
+     */
+    private static ItemStatsDTO readStatsFromItem(ItemStack item) {
+        ItemStatsDTO dto;
+        if (isValidItem(item)) {
+            double hp = NBT.get(item, nbt -> (Double) nbt.getOrDefault("eqHp", 0.0));
+            double hp_regen = NBT.get(item, nbt -> (Double) nbt.getOrDefault("eqHpRegen", 0.0));
+            double mana = NBT.get(item, nbt -> (Double) nbt.getOrDefault("eqMana", 0.0));
+            double mana_regen = NBT.get(item, nbt -> (Double) nbt.getOrDefault("eqManaRegen", 0.0));
+            double stamina = NBT.get(item, nbt -> (Double) nbt.getOrDefault("eqStamina", 0.0));
+            double stamina_regen = NBT.get(item, nbt -> (Double) nbt.getOrDefault("eqStaminaRegen", 0.0));
+            double crit_chance = NBT.get(item, nbt -> (Double) nbt.getOrDefault("eqCC", 0.0));
+            double crit_damage = NBT.get(item, nbt -> (Double) nbt.getOrDefault("eqCD", 0.0));
+            double armor = NBT.get(item, nbt -> (Double) nbt.getOrDefault("eqArmor", 0.0));
+            double power = NBT.get(item, nbt -> (Double) nbt.getOrDefault("eqPower", 0.0));
+            double weaponBaseAttack = NBT.get(item, nbt -> (Double) nbt.getOrDefault("eqBaseAtk", 0.0));
+            double weaponAttackSpeed = NBT.get(item, nbt -> (Double) nbt.getOrDefault("eqAtkspd", 0.0));
+            dto = new ItemStatsDTO(hp, hp_regen, mana, mana_regen, stamina, stamina_regen, crit_chance, crit_damage, armor, power, weaponBaseAttack, weaponAttackSpeed);
+            return dto;
+        } else {
+            return new ItemStatsDTO();
+        }
+    }
+}

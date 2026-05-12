@@ -1,89 +1,92 @@
 package space.vestiges.plugin1.domainlayer.equipment;
 
 public class EquipmentStats {
+
     private double hp;
+    private double hp_regen;
     private double mana;
+    private double mana_regen;
     private double stamina;
+    private double stamina_regen;
+    private double crit_chance;
+    private double crit_damage;
     private double armor;
     private double power;
-    private double attackSpeed;
+    private double weaponBaseAttack;
+    private double weaponAttackSpeed;
 
-    /**
-     * This constructor returns all EquipmentStats as 0s
-     */
+    // Constructor
     public EquipmentStats() {
         this.hp = 0;
+        this.hp_regen = 0;
         this.mana = 0;
+        this.mana_regen = 0;
         this.stamina = 0;
+        this.stamina_regen = 0;
+        this.crit_chance = 0;
+        this.crit_damage = 0;
         this.armor = 0;
         this.power = 0;
-        this.attackSpeed = 0;
+        this.weaponBaseAttack = 1;
+        this.weaponAttackSpeed = 2;
     }
 
-    /**
-     * Constructor to create an EquipmentStats with specified values.
-     *
-     * @param hp set EquipmentStat's hp to this value
-     * @param mana set EquipmentStat's mana to this value
-     * @param stamina set EquipmentStat's stamina to this value
-     * @param armor set EquipmentStat's armor to this value
-     * @param power set EquipmentStat's power to this value
-     * @param attackSpeed set EquipmentStat's attackSpeed to this value
-     */
-    public EquipmentStats(double hp, double mana, double stamina, double armor, double power, double attackSpeed) {
-        this.hp = hp;
-        this.mana = mana;
-        this.stamina = stamina;
-        this.armor = armor;
-        this.power = power;
-        this.attackSpeed = attackSpeed;
+    // Mutator
+    public void add(ItemStatsDTO dto) {
+        this.hp += dto.getHp();
+        this.hp_regen += dto.getHp_regen();
+        this.mana += dto.getMana();
+        this.mana_regen += dto.getMana_regen();
+        this.stamina += dto.getStamina();
+        this.stamina_regen += dto.getStamina_regen();
+        this.crit_chance += dto.getCrit_chance();
+        this.crit_damage += dto.getCrit_damage();
+        this.armor += dto.getArmor();
+        this.power += dto.getPower();
+        this.weaponBaseAttack += dto.getWeaponBaseAttack();
+        this.weaponAttackSpeed += dto.getWeaponAttackSpeed();
+        normalizeStats();
+    }
+    public void sub(ItemStatsDTO dto) {
+        this.hp -= dto.getHp();
+        this.hp_regen -= dto.getHp_regen();
+        this.mana -= dto.getMana();
+        this.mana_regen -= dto.getMana_regen();
+        this.stamina -= dto.getStamina();
+        this.stamina_regen -= dto.getStamina_regen();
+        this.crit_chance -= dto.getCrit_chance();
+        this.crit_damage -= dto.getCrit_damage();
+        this.armor -= dto.getArmor();
+        this.power -= dto.getPower();
+        this.weaponBaseAttack -= dto.getWeaponBaseAttack();
+        this.weaponAttackSpeed -= dto.getWeaponAttackSpeed();
+        normalizeStats();
     }
 
-    /**
-     * Add another equipmentStats to this equipmentStats (update logic)
-     * thisEquipmentStats.add(values to add)
-     *
-     * @param stats EquipmentStats type
-     */
-    public void add(EquipmentStats stats) {
-        this.hp += stats.getHp();
-        this.mana += stats.getMana();
-        this.stamina += stats.getStamina();
-        this.armor += stats.getArmor();
-        this.power += stats.getPower();
-        this.attackSpeed += stats.getAttackSpeed();
-    }
-
-    /**
-     * Prints the entire EquipmentStats object as String
-     * used for debugging
-     *
-     * @return String
-     */
-    @Override
-    public String toString() {
-        return String.format(
-                """
-                        EquipmentStats:
-                          HP: %.2f
-                          Mana: %.2f
-                          Stamina: %.2f
-                          Armor: %.2f
-                          Power: %.2f
-                          attackSpeed: %.2f""",
-                hp, mana, stamina, armor, power, attackSpeed
-        );
-    }
-
-    //getters
-    public double getStamina() {
-        return stamina;
-    }
+    // Getter
     public double getHp() {
         return hp;
     }
+    public double getHp_regen() {
+        return hp_regen;
+    }
     public double getMana() {
         return mana;
+    }
+    public double getMana_regen() {
+        return mana_regen;
+    }
+    public double getStamina() {
+        return stamina;
+    }
+    public double getStamina_regen() {
+        return stamina_regen;
+    }
+    public double getCrit_chance() {
+        return crit_chance;
+    }
+    public double getCrit_damage() {
+        return crit_damage;
     }
     public double getArmor() {
         return armor;
@@ -91,27 +94,33 @@ public class EquipmentStats {
     public double getPower() {
         return power;
     }
-    public double getAttackSpeed() {
-        return attackSpeed;
+    public double getWeaponBaseAttack() {
+        return weaponBaseAttack;
+    }
+    public double getWeaponAttackSpeed() {
+        return weaponAttackSpeed;
     }
 
-    //setters
-    public void setHp(double hp) {
-        this.hp = hp;
+    // Helper, normalize values
+    private void normalizeStats() {
+        this.hp = roundToDecimals(clampToZeroIfTiny(this.hp), 3);
+        this.hp_regen = roundToDecimals(clampToZeroIfTiny(this.hp), 3);
+        this.mana = roundToDecimals(clampToZeroIfTiny(this.hp), 3);
+        this.mana_regen = roundToDecimals(clampToZeroIfTiny(this.hp), 3);
+        this.stamina = roundToDecimals(clampToZeroIfTiny(this.hp), 3);
+        this.stamina_regen = roundToDecimals(clampToZeroIfTiny(this.hp), 3);
+        this.crit_chance = roundToDecimals(clampToZeroIfTiny(this.hp), 3);
+        this.crit_damage = roundToDecimals(clampToZeroIfTiny(this.hp), 3);
+        this.armor = roundToDecimals(clampToZeroIfTiny(this.hp), 3);
+        this.power = roundToDecimals(clampToZeroIfTiny(this.hp), 3);
+        this.weaponBaseAttack = roundToDecimals(clampToZeroIfTiny(this.hp), 3);
+        this.weaponAttackSpeed = roundToDecimals(clampToZeroIfTiny(this.hp), 3);
     }
-    public void setMana(double mana) {
-        this.mana = mana;
+    private double clampToZeroIfTiny(double val) {
+        return Math.abs(val) < 1e-10 ? 0.0 : val;
     }
-    public void setStamina(double stamina) {
-        this.stamina = stamina;
-    }
-    public void setArmor(double armor) {
-        this.armor = armor;
-    }
-    public void setPower(double power) {
-        this.power = power;
-    }
-    public void setAttackSpeed(double attackSpeed) {
-        this.attackSpeed = attackSpeed;
+    private double roundToDecimals(double val, int decimals) {
+        double scale = Math.pow(10, decimals);
+        return Math.round(val * scale) / scale;
     }
 }
